@@ -18,6 +18,7 @@ import ChatbotWidget from "@/components/site/chatbot-widget";
 import DashboardShell from "@/components/dashboard/dashboard-shell";
 import ParentPortal from "@/components/site/parent-portal";
 import ConsultantLandingPage from "@/components/site/consultant-landing";
+import PublicPage from "@/components/site/public-pages";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -35,13 +36,17 @@ export default function Home() {
 function AppShell() {
   const { view, user, parent } = useAppStore();
   const [consultantSlug, setConsultantSlug] = useState<string | null>(null);
+  const [pageKey, setPageKey] = useState<string | null>(null);
 
-  // Check URL for ?consultant=slug on mount (via microtask to avoid setState in effect)
+  // Check URL for ?consultant=slug or ?page=key on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("consultant");
+    const page = params.get("page");
     if (slug) {
       Promise.resolve().then(() => setConsultantSlug(slug));
+    } else if (page) {
+      Promise.resolve().then(() => setPageKey(page));
     }
   }, []);
 
@@ -59,7 +64,14 @@ function AppShell() {
   if (consultantSlug) {
     return <ConsultantLandingPage slug={consultantSlug} onBack={() => {
       setConsultantSlug(null);
-      // Remove ?consultant= from URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }} />;
+  }
+
+  // Public info pages (footer links)
+  if (pageKey) {
+    return <PublicPage pageKey={pageKey as any} onBack={() => {
+      setPageKey(null);
       window.history.replaceState({}, "", window.location.pathname);
     }} />;
   }

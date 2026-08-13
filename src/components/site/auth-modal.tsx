@@ -284,7 +284,7 @@ export default function AuthModal() {
           )}
 
           <div className="pt-2 mt-3 border-t border-orange-100 text-center text-[10px] text-[#7a6a5d]">
-            EduConnect India · v1.0.0
+            Made & maintained by <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#1c1410] hover:text-[#e85d2f]">GuardianX</a>
           </div>
         </form>
       </div>

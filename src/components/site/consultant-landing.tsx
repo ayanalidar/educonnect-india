@@ -221,7 +221,8 @@ export default function ConsultantLandingPage({ slug, onBack }: { slug: string; 
               </div>
 
               <div className="mt-6 text-xs text-white/50">
-                Powered by EduConnect India · {profile.specialization}
+                Powered by EduConnect India · Made & maintained by{" "}
+                <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#f59e0b] hover:underline">GuardianX</a>
               </div>
             </div>
           </div>

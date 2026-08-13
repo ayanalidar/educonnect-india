@@ -13,19 +13,47 @@ import {
 const COLUMNS = [
   {
     title: "Platform",
-    links: ["Features", "Pricing", "Partner Universities", "AI Course Matcher", "Visa Tracker", "Integrations"],
+    links: [
+      { label: "Features", page: "features" },
+      { label: "Pricing", page: "pricing" },
+      { label: "Partner Universities", page: "partners" },
+      { label: "AI Course Matcher", page: "matcher" },
+      { label: "Visa Tracker", page: "visa-tracker" },
+      { label: "Integrations", page: "integrations" },
+    ],
   },
   {
     title: "Company",
-    links: ["About Us", "Careers", "Press", "Blog", "Customer Stories", "Contact"],
+    links: [
+      { label: "About Us", page: "about" },
+      { label: "Careers", page: "careers" },
+      { label: "Press", page: "press" },
+      { label: "Blog", page: "blog" },
+      { label: "Customer Stories", page: "customer-stories" },
+      { label: "Contact", page: "contact" },
+    ],
   },
   {
     title: "Resources",
-    links: ["Help Center", "Counselor Academy", "University Guide", "Visa Handbook", "API Docs", "Status"],
+    links: [
+      { label: "Help Center", page: "help-center" },
+      { label: "Counselor Academy", page: "counselor-academy" },
+      { label: "University Guide", page: "university-guide" },
+      { label: "Visa Handbook", page: "visa-handbook" },
+      { label: "API Docs", page: "api-docs" },
+      { label: "Status", page: "status" },
+    ],
   },
   {
     title: "Legal",
-    links: ["Privacy Policy", "Terms of Service", "DPDP Compliance", "Cookie Policy", "GDPR", "Security"],
+    links: [
+      { label: "Privacy Policy", page: "privacy" },
+      { label: "Terms of Service", page: "terms" },
+      { label: "DPDP Compliance", page: "dpdp" },
+      { label: "Cookie Policy", page: "cookie" },
+      { label: "GDPR", page: "gdpr" },
+      { label: "Security", page: "security" },
+    ],
   },
 ];
 
@@ -122,12 +150,12 @@ export default function Footer() {
                 </div>
                 <ul className="mt-4 space-y-2.5">
                   {col.links.map((l) => (
-                    <li key={l}>
+                    <li key={l.page}>
                       <a
-                        href="#"
+                        href={`/?page=${l.page}`}
                         className="text-sm text-white/70 hover:text-[#f59e0b] transition-colors"
                       >
-                        {l}
+                        {l.label}
                       </a>
                     </li>
                   ))}
@@ -142,6 +170,8 @@ export default function Footer() {
           <div className="text-xs text-white/50">
             © {new Date().getFullYear()} EduConnect India Technologies Pvt. Ltd.
             · Made with care in Mumbai 🇮🇳
+            · Made & maintained by{" "}
+            <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#f59e0b] hover:underline">GuardianX</a>
           </div>
 
           <div className="flex items-center gap-2">

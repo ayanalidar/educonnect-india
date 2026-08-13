@@ -234,7 +234,8 @@ export default function Sidebar({
           </button>
 
           <div className="pt-1.5 px-3 text-center text-[10px] text-white/40">
-            EduConnect India · v1.0.0
+            Made & maintained by{" "}
+            <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#f59e0b] hover:underline">GuardianX</a>
           </div>
         </div>
       </aside>
