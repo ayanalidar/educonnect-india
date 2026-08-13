@@ -1,5 +1,4 @@
 // Students CRM view — searchable table + add student modal
-// Made & maintained by GuardianX
 
 "use client";
 

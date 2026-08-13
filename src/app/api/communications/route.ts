@@ -1,5 +1,4 @@
 // GET /api/communications  +  POST /api/communications
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

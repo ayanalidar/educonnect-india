@@ -1,5 +1,4 @@
 // Finance & invoicing view
-// Made & maintained by GuardianX
 
 "use client";
 

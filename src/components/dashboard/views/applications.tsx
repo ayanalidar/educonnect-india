@@ -1,5 +1,4 @@
 // Applications kanban view
-// Made & maintained by GuardianX
 
 "use client";
 

@@ -1,5 +1,4 @@
 // Innovation Lab — expanded roadmap with 18+ feature suggestions, voting, status
-// Made & maintained by GuardianX
 
 "use client";
 

@@ -1,5 +1,4 @@
 // Floating AI Chatbot Widget — appears on landing + dashboard
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -200,7 +199,7 @@ export default function ChatbotWidget() {
           {/* Footer */}
           <div className="px-3 py-1.5 bg-[#fff8f1] border-t border-orange-50 text-center">
             <span className="text-[9px] text-[#7a6a5d]">
-              Powered by <strong className="text-[#1c1410]">EduConnect India</strong> · Made by <strong className="text-[#1c1410]">GuardianX</strong>
+              Powered by <strong className="text-[#1c1410]">EduConnect India</strong>
             </span>
           </div>
         </div>

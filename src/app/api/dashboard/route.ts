@@ -1,5 +1,4 @@
 // GET /api/dashboard/stats — aggregated KPIs for the dashboard
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

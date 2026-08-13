@@ -1,5 +1,4 @@
 // Country Guides Library dashboard view
-// Made & maintained by GuardianX
 
 "use client";
 

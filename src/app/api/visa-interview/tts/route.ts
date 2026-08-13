@@ -1,5 +1,4 @@
 // TTS endpoint — converts interview question to voice
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/auth";

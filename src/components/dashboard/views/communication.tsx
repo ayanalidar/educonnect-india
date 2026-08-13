@@ -1,5 +1,4 @@
 // Communication hub — WhatsApp / Email / SMS inbox + composer
-// Made & maintained by GuardianX
 
 "use client";
 

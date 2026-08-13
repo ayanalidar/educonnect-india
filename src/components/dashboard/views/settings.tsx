@@ -1,5 +1,4 @@
 // Settings view — profile, language, security
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -121,9 +120,8 @@ export default function SettingsView() {
         </div>
       </Card>
 
-      {/* GuardianX footer */}
       <div className="text-center text-xs text-[#7a6a5d] py-2">
-        {t("brand.madeBy")} <strong className="text-[#1c1410]">GuardianX</strong> · v1.0.0 · EduConnect India
+        EduConnect India · v1.0.0
       </div>
     </div>
   );

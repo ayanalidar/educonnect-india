@@ -1,5 +1,4 @@
 // Document OCR dashboard view — upload docs, VLM extracts fields, history list
-// Made & maintained by GuardianX
 
 "use client";
 

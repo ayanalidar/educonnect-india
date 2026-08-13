@@ -1,5 +1,4 @@
 // POST /api/branches/create — create new branch
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

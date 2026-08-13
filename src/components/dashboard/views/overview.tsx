@@ -1,5 +1,4 @@
 // Overview dashboard view — KPIs + charts + recent activity
-// Made & maintained by GuardianX
 
 "use client";
 

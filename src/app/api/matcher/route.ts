@@ -1,6 +1,5 @@
 // AI Course Matcher — POST studentId → ranked universities with fit scores
 // Uses deterministic scoring + LLM-generated personalized explanation
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

@@ -1,5 +1,4 @@
 // AI Mock Visa Interviewer dashboard view — voice-based practice
-// Made & maintained by GuardianX
 
 "use client";
 

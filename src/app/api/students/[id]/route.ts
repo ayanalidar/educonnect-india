@@ -1,6 +1,5 @@
 // PUT /api/students/[id] — update student
 // DELETE /api/students/[id] — delete student
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

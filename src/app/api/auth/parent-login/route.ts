@@ -1,5 +1,4 @@
 // POST /api/auth/parent-login
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

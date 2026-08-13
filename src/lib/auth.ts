@@ -1,5 +1,4 @@
 // Shared auth helpers — HMAC-based token + password hashing
-// Made & maintained by GuardianX
 
 import * as crypto from "crypto";
 

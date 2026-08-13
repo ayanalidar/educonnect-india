@@ -1,5 +1,4 @@
 // Smart Deadline Engine dashboard view
-// Made & maintained by GuardianX
 
 "use client";
 

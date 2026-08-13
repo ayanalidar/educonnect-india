@@ -1,5 +1,4 @@
 // POST /api/leads — capture landing page demo requests
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

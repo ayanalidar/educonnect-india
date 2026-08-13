@@ -1,5 +1,4 @@
 // Dashboard sidebar — navigation
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -37,6 +36,7 @@ export type DashboardView =
   | "lead-magnets"
   | "audit-logs"
   | "content-editor"
+  | "my-landing-page"
   | "innovation"
   | "settings";
 
@@ -79,6 +79,7 @@ const NAV_SECTIONS: { title: string; items: { key: DashboardView; icon: React.El
       { key: "branches", icon: Building2, tKey: "nav.branches", badge: "NEW" },
       { key: "audit-logs", icon: Shield, tKey: "nav.audit-logs", badge: "NEW" },
       { key: "content-editor", icon: FileText, tKey: "nav.content-editor", badge: "NEW" },
+      { key: "my-landing-page", icon: Globe2, tKey: "nav.my-landing-page", badge: "NEW" },
       { key: "integrations", icon: Plug, tKey: "nav.integrations" },
       { key: "mobile", icon: Smartphone, tKey: "nav.mobile", badge: "NEW" },
       { key: "innovation", icon: Beaker, tKey: "nav.innovation", badge: "NEW" },
@@ -232,10 +233,8 @@ export default function Sidebar({
             Sign out
           </button>
 
-          {/* GuardianX credit */}
-          <div className="pt-1.5 px-3 flex items-center justify-center gap-1.5 text-[10px] text-white/40">
-            <Shield className="h-3 w-3" />
-            {t("brand.madeBy")} <strong className="text-white/70">GuardianX</strong>
+          <div className="pt-1.5 px-3 text-center text-[10px] text-white/40">
+            EduConnect India · v1.0.0
           </div>
         </div>
       </aside>

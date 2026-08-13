@@ -1,5 +1,4 @@
 // Dashboard topbar — title, search, language switcher, notifications, user menu
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -58,6 +57,7 @@ export default function Topbar({
     "lead-magnets": "lead-magnets.subtitle",
     "audit-logs": "audit-logs.subtitle",
     "content-editor": "content-editor.subtitle",
+    "my-landing-page": "my-landing-page.subtitle",
     innovation: "innovation.subtitle",
     settings: "settings.subtitle",
   };

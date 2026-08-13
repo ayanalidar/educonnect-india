@@ -64,7 +64,7 @@ const PLANS = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="relative py-24 sm:py-32">
+    <section id="pricing" className="relative py-16 sm:py-22">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="reveal max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3.5 py-1.5 text-xs font-semibold text-[#c8451a]">
@@ -82,7 +82,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="mt-14 grid lg:grid-cols-3 gap-6 items-stretch">
+        <div className="mt-10 grid lg:grid-cols-3 gap-6 items-stretch">
           {PLANS.map((p, i) => (
             <div
               key={p.name}

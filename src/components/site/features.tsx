@@ -72,7 +72,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative py-24 sm:py-32 bg-gradient-to-b from-white via-[#fff8f1] to-white"
+      className="relative py-16 sm:py-22 bg-gradient-to-b from-white via-[#fff8f1] to-white"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
@@ -88,12 +88,12 @@ export default function Features() {
           <p className="mt-5 text-lg leading-relaxed text-[#4b3d33]">
             From AI-powered course matching to compliance audit trails — EduConnect India is the
             most comprehensive SaaS platform for Indian education consultants. 23 features across
-            5 categories, all built natively, all branded GuardianX.
+            5 categories, all built natively.
           </p>
         </div>
 
         {/* Feature groups */}
-        <div className="mt-14 space-y-12">
+        <div className="mt-10 space-y-8">
           {FEATURE_GROUPS.map((group, gi) => (
             <div key={group.title} className="reveal">
               {/* Group header */}

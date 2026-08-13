@@ -1,5 +1,4 @@
 // Multi-branch Management dashboard view
-// Made & maintained by GuardianX
 
 "use client";
 

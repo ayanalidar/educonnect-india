@@ -1,5 +1,4 @@
 // Conversational AI Chatbot — POST message → LLM response
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

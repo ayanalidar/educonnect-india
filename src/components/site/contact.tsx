@@ -75,7 +75,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32 bg-brand-cream">
+    <section id="contact" className="relative py-16 sm:py-22 bg-brand-cream">
       <div aria-hidden className="absolute inset-0 bg-dot-grid opacity-50" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-start">

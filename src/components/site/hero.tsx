@@ -16,7 +16,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden pt-[120px] pb-20 sm:pt-[140px] sm:pb-28"
+      className="relative overflow-hidden pt-[84px] pb-14 sm:pt-[98px] sm:pb-20"
     >
       {/* Decorative background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
@@ -245,7 +245,7 @@ export default function Hero() {
         </div>
 
         {/* Stats strip */}
-        <div className="mt-16 sm:mt-24 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-3xl overflow-hidden ring-1 ring-orange-100 bg-orange-100">
+        <div className="mt-12 sm:py-16 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-3xl overflow-hidden ring-1 ring-orange-100 bg-orange-100">
           {[
             { v: "48,000+", l: "Students placed", c: "text-[#e85d2f]" },
             { v: "1,048", l: "Partner universities", c: "text-[#0f766e]" },

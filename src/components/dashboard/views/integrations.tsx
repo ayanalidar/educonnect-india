@@ -1,5 +1,4 @@
 // Integrations view — connect tools (WhatsApp, Razorpay, embassy, etc.)
-// Made & maintained by GuardianX
 
 "use client";
 

@@ -1,5 +1,4 @@
 // Start visa interview session — generates country-specific questions
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

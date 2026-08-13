@@ -1,5 +1,4 @@
 // Global app store — view switching (landing/dashboard/parent) + auth state
-// Made & maintained by GuardianX
 
 "use client";
 

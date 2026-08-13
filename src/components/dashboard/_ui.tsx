@@ -1,5 +1,4 @@
 // Shared dashboard UI helpers
-// Made & maintained by GuardianX
 
 import { cn } from "@/lib/utils";
 

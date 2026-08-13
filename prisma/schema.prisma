@@ -29,6 +29,34 @@ model User {
   communications Communication[]
   invoices       Invoice[]
   appointments   Appointment[]
+  profile        ConsultantProfile?
+}
+
+// ============ Consultant Profiles (per-consultant landing pages) ============
+
+model ConsultantProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug            String   @unique // URL slug e.g. "rajesh-mehta"
+  tagline         String   @default("Expert Education Counselor")
+  bio             String   @default("")
+  specialization  String   @default("Study Abroad") // e.g. "UK, Canada, Australia"
+  yearsExperience Int      @default(5)
+  studentsPlaced  Int      @default(0)
+  successRate     Int      @default(0)
+  rating          Float    @default(5.0)
+  photoColor      String   @default("#e85d2f")
+  phone           String?
+  whatsapp        String?
+  email           String?
+  city            String?
+  heroHeadline    String   @default("Helping students achieve their global education dreams")
+  heroSubtext     String   @default("Personalized counseling for studying abroad — from university selection to visa approval.")
+  primaryCta      String   @default("Book a free consultation")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 // ============ Students ============

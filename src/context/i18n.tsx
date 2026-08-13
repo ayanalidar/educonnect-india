@@ -1,5 +1,4 @@
 // Lightweight i18n React context — current language + useT hook
-// Made & maintained by GuardianX
 
 "use client";
 

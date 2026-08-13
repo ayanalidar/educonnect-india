@@ -1,5 +1,4 @@
 // Parent Portal — separate view for parents to track their child's progress
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -218,7 +217,7 @@ export default function ParentPortal() {
         {/* Footer */}
         <div className="mt-10 pt-6 border-t border-emerald-100 text-center text-xs text-[#7a6a5d]">
           <Shield className="inline h-3 w-3 mr-1" />
-          Made & maintained by <strong className="text-[#1c1410]">GuardianX</strong> · EduConnect India Parent Portal
+          EduConnect India Parent Portal · v1.0.0
         </div>
       </main>
     </div>

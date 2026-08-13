@@ -1,5 +1,4 @@
 // Scholarship Finder dashboard view
-// Made & maintained by GuardianX
 
 "use client";
 

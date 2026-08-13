@@ -1,5 +1,4 @@
 // Document OCR — POST base64 image + docType → VLM extracts structured fields
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

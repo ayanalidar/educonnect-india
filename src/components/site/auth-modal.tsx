@@ -1,5 +1,4 @@
 // Auth modal — sign in / sign up / parent login portal
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -284,9 +283,8 @@ export default function AuthModal() {
             </div>
           )}
 
-          <div className="pt-2 mt-3 border-t border-orange-100 flex items-center justify-center gap-1.5 text-[10px] text-[#7a6a5d]">
-            <Shield className="h-3 w-3" />
-            {t("brand.madeBy")} <strong className="text-[#1c1410]">GuardianX</strong>
+          <div className="pt-2 mt-3 border-t border-orange-100 text-center text-[10px] text-[#7a6a5d]">
+            EduConnect India · v1.0.0
           </div>
         </form>
       </div>

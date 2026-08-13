@@ -1,5 +1,4 @@
 // Mobile App Preview — simulated iOS/Android app screens
-// Made & maintained by GuardianX
 
 "use client";
 

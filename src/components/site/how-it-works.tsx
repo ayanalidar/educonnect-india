@@ -37,7 +37,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how"
-      className="relative py-24 sm:py-32 bg-[#1c1410] overflow-hidden"
+      className="relative py-16 sm:py-22 bg-[#1c1410] overflow-hidden"
     >
       {/* Decorative */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
@@ -62,7 +62,7 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {STEPS.map((s, i) => (
             <div
               key={s.n}

@@ -1,6 +1,5 @@
 // PUT /api/branches/[id] — update branch
 // DELETE /api/branches/[id] — delete branch
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

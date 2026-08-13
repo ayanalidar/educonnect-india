@@ -1,5 +1,4 @@
 // Visa tracker view
-// Made & maintained by GuardianX
 
 "use client";
 

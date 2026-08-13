@@ -112,7 +112,7 @@ export default function Partners() {
   return (
     <section
       id="partners"
-      className="relative py-24 sm:py-32"
+      className="relative py-16 sm:py-22"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
@@ -134,7 +134,7 @@ export default function Partners() {
         </div>
 
         {/* Country cards */}
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {COUNTRIES.filter((c) => c.univs.length > 0).map((c, i) => (
             <div
               key={c.name}

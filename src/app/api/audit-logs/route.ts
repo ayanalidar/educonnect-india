@@ -1,5 +1,4 @@
 // GET /api/audit-logs — compliance audit trail
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

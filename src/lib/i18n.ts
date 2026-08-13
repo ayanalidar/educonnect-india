@@ -1,5 +1,4 @@
 // Lightweight i18n dictionary — 10 Indian languages
-// Made & maintained by GuardianX
 
 export type Lang = "en" | "hi" | "ta" | "te" | "kn" | "bn" | "mr" | "gu" | "pa" | "ml";
 
@@ -44,6 +43,7 @@ const en: Dict = {
   "nav.lead-magnets": "Lead Magnets",
   "nav.audit-logs": "Audit Trail",
   "nav.content-editor": "Content Editor",
+  "nav.my-landing-page": "My Landing Page",
   "nav.innovation": "Innovation Lab",
   "nav.settings": "Settings",
   "common.search": "Search…",
@@ -97,6 +97,7 @@ const en: Dict = {
   "lead-magnets.subtitle": "Free tools that capture leads 24/7",
   "audit-logs.subtitle": "Tamper-evident logs — ISO 27001, DPDP, GDPR ready",
   "content-editor.subtitle": "Edit landing page content — no code needed",
+  "my-landing-page.subtitle": "Your personal shareable landing page",
   "innovation.title": "Innovation Lab",
   "innovation.subtitle": "Vote on what we build next",
   "settings.title": "Settings",

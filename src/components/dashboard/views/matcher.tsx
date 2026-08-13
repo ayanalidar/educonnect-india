@@ -1,5 +1,4 @@
 // AI Course Matcher dashboard view — pick a student → ranked universities with LLM explanations
-// Made & maintained by GuardianX
 
 "use client";
 

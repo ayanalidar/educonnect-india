@@ -1,5 +1,4 @@
 // Calendar & Booking dashboard view
-// Made & maintained by GuardianX
 
 "use client";
 

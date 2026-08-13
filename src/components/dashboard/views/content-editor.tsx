@@ -1,5 +1,4 @@
 // Content Editor dashboard view — edit landing page content
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -39,7 +38,7 @@ const DEFAULT_CONTENT = {
   ],
   company: {
     name: "EduConnect India",
-    tagline: "Made & maintained by GuardianX",
+    tagline: "EduConnect India",
     email: "hello@educonnect.in",
     phone: "+91 22 6824 1900",
   },

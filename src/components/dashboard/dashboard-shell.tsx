@@ -1,5 +1,4 @@
 // Dashboard shell — composes sidebar + topbar + active view
-// Made & maintained by GuardianX
 
 "use client";
 
@@ -28,6 +27,7 @@ import BranchesView from "@/components/dashboard/views/branches";
 import LeadMagnetsView from "@/components/dashboard/views/lead-magnets";
 import AuditLogsView from "@/components/dashboard/views/audit-logs";
 import ContentEditorView from "@/components/dashboard/views/content-editor";
+import MyLandingPageView from "@/components/dashboard/views/my-landing-page";
 import InnovationLabView from "@/components/dashboard/views/innovation-lab";
 import SettingsView from "@/components/dashboard/views/settings";
 import { useAppStore } from "@/store/app-store";
@@ -75,6 +75,7 @@ export default function DashboardShell() {
           {view === "lead-magnets" && <LeadMagnetsView />}
           {view === "audit-logs" && <AuditLogsView />}
           {view === "content-editor" && <ContentEditorView />}
+          {view === "my-landing-page" && <MyLandingPageView />}
           {view === "innovation" && <InnovationLabView />}
           {view === "settings" && <SettingsView />}
         </main>

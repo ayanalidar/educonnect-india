@@ -1,6 +1,5 @@
 // PUT /api/country-guides/[id] — update guide
 // DELETE /api/country-guides/[id] — delete guide
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

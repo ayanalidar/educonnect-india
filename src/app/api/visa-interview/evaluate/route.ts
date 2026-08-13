@@ -1,5 +1,4 @@
 // Evaluate visa interview answer — LLM scores + feedback
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

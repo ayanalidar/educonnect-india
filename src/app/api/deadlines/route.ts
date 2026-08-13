@@ -1,5 +1,4 @@
 // Smart Deadline Engine — GET deadlines with escalation logic
-// Made & maintained by GuardianX
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";

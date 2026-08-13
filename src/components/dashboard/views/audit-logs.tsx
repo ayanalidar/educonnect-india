@@ -1,5 +1,4 @@
 // Compliance Audit Trail dashboard view
-// Made & maintained by GuardianX
 
 "use client";
 

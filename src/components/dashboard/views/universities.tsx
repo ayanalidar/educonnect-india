@@ -1,5 +1,4 @@
 // Universities explorer — searchable + filterable grid
-// Made & maintained by GuardianX
 
 "use client";
 

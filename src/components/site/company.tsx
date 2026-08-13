@@ -53,7 +53,7 @@ const VALUES = [
 
 export default function Company() {
   return (
-    <section id="company" className="relative py-24 sm:py-32">
+    <section id="company" className="relative py-16 sm:py-22">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="reveal max-w-3xl">
@@ -79,7 +79,7 @@ export default function Company() {
         </div>
 
         {/* Values grid */}
-        <div className="mt-14 grid md:grid-cols-3 gap-6">
+        <div className="mt-10 grid md:grid-cols-3 gap-6">
           {VALUES.map((v) => (
             <div
               key={v.title}
@@ -101,7 +101,7 @@ export default function Company() {
         </div>
 
         {/* Timeline */}
-        <div className="mt-20 reveal">
+        <div className="mt-14 reveal">
           <div className="flex items-center gap-3 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-200 to-transparent" />
             <span className="text-sm font-semibold uppercase tracking-[0.18em] text-[#e85d2f]">

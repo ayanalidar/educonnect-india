@@ -63,7 +63,7 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="relative py-24 sm:py-32 bg-gradient-to-b from-white via-[#fff8f1] to-white"
+      className="relative py-16 sm:py-22 bg-gradient-to-b from-white via-[#fff8f1] to-white"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="reveal max-w-3xl">
@@ -82,7 +82,7 @@ export default function Testimonials() {
           </p>
         </div>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {TESTIMONIALS.map((t, i) => (
             <figure
               key={t.name}

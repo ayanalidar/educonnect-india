@@ -1,5 +1,4 @@
 // Ensures z-ai-web-dev-sdk config exists — reads from env vars if /etc/.z-ai-config is missing
-// Made & maintained by GuardianX
 
 import * as fs from "fs";
 import * as os from "os";

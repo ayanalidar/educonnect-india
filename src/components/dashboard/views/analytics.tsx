@@ -1,5 +1,4 @@
 // Analytics view — funnel + counselor performance + insights
-// Made & maintained by GuardianX
 
 "use client";
 

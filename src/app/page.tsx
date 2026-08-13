@@ -17,6 +17,8 @@ import AuthModal from "@/components/site/auth-modal";
 import ChatbotWidget from "@/components/site/chatbot-widget";
 import DashboardShell from "@/components/dashboard/dashboard-shell";
 import ParentPortal from "@/components/site/parent-portal";
+import ConsultantLandingPage from "@/components/site/consultant-landing";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   useScrollReveal();
@@ -32,8 +34,18 @@ export default function Home() {
 
 function AppShell() {
   const { view, user, parent } = useAppStore();
+  const [consultantSlug, setConsultantSlug] = useState<string | null>(null);
 
-  // Parent portal takes priority if parent is logged in
+  // Check URL for ?consultant=slug on mount (via microtask to avoid setState in effect)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("consultant");
+    if (slug) {
+      Promise.resolve().then(() => setConsultantSlug(slug));
+    }
+  }, []);
+
+  // Parent portal takes priority
   if (view === "parent" && parent) {
     return <ParentPortal />;
   }
@@ -41,6 +53,15 @@ function AppShell() {
   // Counselor dashboard
   if (view === "dashboard" && user) {
     return <DashboardShell />;
+  }
+
+  // Per-consultant landing page
+  if (consultantSlug) {
+    return <ConsultantLandingPage slug={consultantSlug} onBack={() => {
+      setConsultantSlug(null);
+      // Remove ?consultant= from URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }} />;
   }
 
   // Default: landing page
