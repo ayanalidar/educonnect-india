@@ -1,8 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, ExternalLink, Mail, Phone, MapPin, Shield, FileText, Code, Activity, CheckCircle2, Globe2 } from "lucide-react";
+import {
+  ChevronLeft, ExternalLink, Mail, Phone, MapPin, Shield, FileText, Code,
+  Activity, CheckCircle2, Globe2, Zap, Award, TrendingUp, Users, Plane,
+  MessageCircle, Wallet, BarChart3, Building2, Bell, Mic, Gift, Sparkles,
+  Search, Calendar, Star, Briefcase, Heart, Target, Lock, Eye, Bug,
+  Server, Database, Cloud, KeyRound, Fingerprint, ScanLine,
+} from "lucide-react";
 import { useAppStore } from "@/store/app-store";
+import Navbar from "@/components/site/navbar";
+import Footer from "@/components/site/footer";
 
 type PageKey =
   | "about" | "careers" | "press" | "blog" | "customer-stories" | "contact"
@@ -11,35 +19,17 @@ type PageKey =
   | "features" | "pricing" | "partners" | "matcher" | "visa-tracker" | "integrations";
 
 export default function PublicPage({ pageKey, onBack }: { pageKey: PageKey; onBack: () => void }) {
-  const { openAuthModal } = useAppStore();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pageKey]);
 
   return (
-    <div className="min-h-screen bg-[#fff8f1]">
-      {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-orange-100">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 h-[60px] flex items-center justify-between">
-          <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#7a6a5d] hover:text-[#e85d2f]">
-            <ChevronLeft className="h-4 w-4" /> Back to EduConnect
-          </button>
-          <button onClick={() => openAuthModal("signin")} className="text-sm font-semibold text-[#e85d2f] hover:underline">
-            Sign in
-          </button>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-12">
+    <div className="min-h-screen flex flex-col bg-[#fff8f1]">
+      <Navbar />
+      <main className="flex-1 mx-auto max-w-4xl px-4 sm:px-6 py-12 page-enter w-full">
         {renderPage(pageKey)}
       </main>
-
-      {/* Footer credit */}
-      <footer className="border-t border-orange-100 py-6 text-center text-xs text-[#7a6a5d]">
-        © {new Date().getFullYear()} EduConnect India Technologies Pvt. Ltd. · Made & maintained by{" "}
-        <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#1c1410] hover:text-[#e85d2f]">GuardianX</a>
-      </footer>
+      <Footer />
     </div>
   );
 }
@@ -82,8 +72,8 @@ function renderPage(key: PageKey) {
 
 function PageHeader({ title, subtitle, icon: Icon, color }: { title: string; subtitle: string; icon: React.ElementType; color: string }) {
   return (
-    <div className="mb-8">
-      <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg mb-4" style={{ background: `linear-gradient(135deg, ${color}, ${color}cc)`, color: "white" }}>
+    <div className="mb-8 animate-fade-in-up">
+      <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg mb-4 icon-bounce group" style={{ background: `linear-gradient(135deg, ${color}, ${color}cc)`, color: "white" }}>
         <Icon className="h-7 w-7" />
       </span>
       <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1c1410]">{title}</h1>
@@ -92,16 +82,25 @@ function PageHeader({ title, subtitle, icon: Icon, color }: { title: string; sub
   );
 }
 
-function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`rounded-2xl bg-white p-5 ring-1 ring-orange-100 shadow-sm ${className}`}>{children}</div>;
+function Card({ children, className = "", delay }: { children: React.ReactNode; className?: string; delay?: string }) {
+  return <div className={`rounded-2xl bg-white p-5 ring-1 ring-orange-100 shadow-sm hover-lift card-shimmer animate-fade-in-up ${delay || ""} ${className}`}>{children}</div>;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-bold text-[#1c1410] mb-3">{title}</h2>
+      <h2 className="text-xl font-bold text-[#1c1410] mb-3 animate-fade-in-up">{title}</h2>
       <div className="space-y-3">{children}</div>
     </div>
+  );
+}
+
+function AnimatedIcon({ icon: Icon, color, animation = "bounce" }: { icon: React.ElementType; color: string; animation?: "bounce" | "rotate" | "wiggle" | "scale" }) {
+  const animClass = animation === "bounce" ? "icon-bounce" : animation === "rotate" ? "icon-rotate" : animation === "wiggle" ? "icon-wiggle" : "icon-scale";
+  return (
+    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl group" style={{ background: `${color}1a`, color }}>
+      <Icon className={`h-5 w-5 ${animClass}`} />
+    </span>
   );
 }
 
@@ -111,34 +110,37 @@ function AboutPage() {
   return (
     <div>
       <PageHeader title="About EduConnect India" subtitle="Building India's most comprehensive SaaS platform for education consultants." icon={Globe2} color="#e85d2f" />
-      <Card>
-        <p className="text-sm leading-relaxed text-[#3a2e26]">
-          EduConnect India was founded in 2019 by a team of former counselors, university admissions officers, and product engineers who lived the pain of running a consultancy on spreadsheets and WhatsApp. We believed Indian students deserved a smarter, more transparent path to global education — and that the consultants who guide them deserved better tools.
-        </p>
-        <p className="text-sm leading-relaxed text-[#3a2e26] mt-4">
-          Today we power 480+ consultancies, 48,000+ student placements, and partnerships with 1,048 universities across 32 countries. Our platform includes 23 features across AI tools, operations, growth, business, and portals — all built natively, all in one place.
-        </p>
-      </Card>
+      <Card delay="stagger-1"><p className="text-sm leading-relaxed text-[#3a2e26]">
+        EduConnect India was founded in 2019 by a team of former counselors, university admissions officers, and product engineers who lived the pain of running a consultancy on spreadsheets and WhatsApp. We believed Indian students deserved a smarter, more transparent path to global education — and that the consultants who guide them deserved better tools.
+      </p>
+      <p className="text-sm leading-relaxed text-[#3a2e26] mt-4">
+        Today we power 480+ consultancies, 48,000+ student placements, and partnerships with 1,048 universities across 32 countries. Our platform includes 23 features across AI tools, operations, growth, business, and portals — all built natively, all in one place. We're backed by Blume Ventures and angel investors who've built companies like Freshworks, Zoho, and Razorpay.
+      </p></Card>
 
       <Section title="Our Mission">
-        <Card><p className="text-sm text-[#3a2e26]">Empower every Indian education consultant — from a 2-person office in Tier-3 cities to a 200-counselor enterprise — to operate with the rigor, data, and reach of a global firm.</p></Card>
+        <Card delay="stagger-1"><div className="flex items-start gap-3"><Target className="h-5 w-5 text-[#e85d2f] shrink-0 mt-0.5" /><p className="text-sm text-[#3a2e26]">Empower every Indian education consultant — from a 2-person office in Tier-3 cities to a 200-counselor enterprise — to operate with the rigor, data, and reach of a global firm.</p></div></Card>
       </Section>
 
       <Section title="Our Values">
-        <Card><div className="font-bold text-[#1c1410] text-sm mb-1">Student outcomes above all</div><p className="text-sm text-[#3a2e26]">We obsess over the moment a student gets an offer letter, and build every feature backwards from that moment of joy.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm mb-1">Software that feels light</div><p className="text-sm text-[#3a2e26]">No bloated interfaces, no confusing settings. Clean, intuitive, fast — the way modern software should feel.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm mb-1">Support that feels personal</div><p className="text-sm text-[#3a2e26]">Every customer gets a dedicated onboarding manager for the first 90 days — no exceptions.</p></Card>
+        <Card delay="stagger-1"><div className="flex items-start gap-3"><Heart className="h-5 w-5 text-[#e85d2f] shrink-0 mt-0.5 icon-bounce group" /><div><div className="font-bold text-[#1c1410] text-sm">Student outcomes above all</div><p className="text-sm text-[#3a2e26] mt-1">We obsess over the moment a student gets an offer letter, and build every feature backwards from that moment of joy. Every product decision starts with: "Does this help a student get admitted?"</p></div></div></Card>
+        <Card delay="stagger-2"><div className="flex items-start gap-3"><Sparkles className="h-5 w-5 text-[#0f766e] shrink-0 mt-0.5 icon-bounce group" /><div><div className="font-bold text-[#1c1410] text-sm">Software that feels light</div><p className="text-sm text-[#3a2e26] mt-1">No bloated interfaces, no confusing settings. Clean, intuitive, fast — the way modern software should feel. We benchmark against consumer apps like Swiggy and Cred, not enterprise tools from 2005.</p></div></div></Card>
+        <Card delay="stagger-3"><div className="flex items-start gap-3"><Users className="h-5 w-5 text-[#f59e0b] shrink-0 mt-0.5 icon-bounce group" /><div><div className="font-bold text-[#1c1410] text-sm">Support that feels personal</div><p className="text-sm text-[#3a2e26] mt-1">Every customer gets a dedicated onboarding manager for the first 90 days — no exceptions. We respond within 2 hours during business hours. We know our customers by name, not ticket number.</p></div></div></Card>
+        <Card delay="stagger-4"><div className="flex items-start gap-3"><Shield className="h-5 w-5 text-[#0f766e] shrink-0 mt-0.5 icon-bounce group" /><div><div className="font-bold text-[#1c1410] text-sm">Privacy by design</div><p className="text-sm text-[#3a2e26] mt-1">We're DPDP Act 2023 compliant, ISO 27001 certified, and GDPR ready. Student data is sacred — we treat it like our own. Every feature is built with privacy and security as the foundation, not an afterthought.</p></div></div></Card>
       </Section>
 
       <Section title="By the numbers">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { v: "480+", l: "Consultancies", c: "#e85d2f" },
-            { v: "48,000+", l: "Students placed", c: "#0f766e" },
-            { v: "1,048", l: "Partner universities", c: "#f59e0b" },
-            { v: "32", l: "Countries", c: "#0ea5e9" },
+            { v: "480+", l: "Consultancies", c: "#e85d2f", d: "stagger-1" },
+            { v: "48,000+", l: "Students placed", c: "#0f766e", d: "stagger-2" },
+            { v: "1,048", l: "Partner universities", c: "#f59e0b", d: "stagger-3" },
+            { v: "32", l: "Countries", c: "#0ea5e9", d: "stagger-4" },
+            { v: "92%", l: "Visa success rate", c: "#22c55e", d: "stagger-5" },
+            { v: "23", l: "Platform features", c: "#a855f7", d: "stagger-6" },
+            { v: "10", l: "Indian languages", c: "#ec4899", d: "stagger-7" },
+            { v: "₹38.6L", l: "Avg monthly revenue/consultancy", c: "#1c1410", d: "stagger-8" },
           ].map((s) => (
-            <Card key={s.l} className="text-center">
+            <Card key={s.l} className={`text-center animate-count-up ${s.d}`}>
               <div className="text-3xl font-extrabold" style={{ color: s.c }}>{s.v}</div>
               <div className="text-xs text-[#7a6a5d] mt-1">{s.l}</div>
             </Card>
@@ -146,10 +148,29 @@ function AboutPage() {
         </div>
       </Section>
 
-      <Section title="Leadership">
-        <Card><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#e85d2f] to-[#f59e0b] text-white font-bold">RM</span><div><div className="font-bold text-[#1c1410] text-sm">Rajesh Mehta</div><div className="text-xs text-[#7a6a5d]">Founder & CEO · 12 years in international education</div></div></div></Card>
-        <Card><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0f766e] to-[#14b8a6] text-white font-bold">AN</span><div><div className="font-bold text-[#1c1410] text-sm">Anjali Nair</div><div className="text-xs text-[#7a6a5d]">CTO · Ex-Google, built scale systems for 100M+ users</div></div></div></Card>
-        <Card><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#a855f7] to-[#7e22ce] text-white font-bold">SK</span><div><div className="font-bold text-[#1c1410] text-sm">Sandeep Kulkarni</div><div className="text-xs text-[#7a6a5d]">VP Product · Former counselor, 8 years at IDP Education</div></div></div></Card>
+      <Section title="Leadership team">
+        <Card delay="stagger-1"><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#e85d2f] to-[#f59e0b] text-white font-bold icon-bounce group">RM</span><div><div className="font-bold text-[#1c1410] text-sm">Rajesh Mehta</div><div className="text-xs text-[#7a6a5d]">Founder & CEO · 12 years in international education, ex-IDP Education</div></div></div></Card>
+        <Card delay="stagger-2"><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0f766e] to-[#14b8a6] text-white font-bold icon-bounce group">AN</span><div><div className="font-bold text-[#1c1410] text-sm">Anjali Nair</div><div className="text-xs text-[#7a6a5d]">CTO · Ex-Google, built scale systems for 100M+ users. IIT Delhi alumna.</div></div></div></Card>
+        <Card delay="stagger-3"><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#a855f7] to-[#7e22ce] text-white font-bold icon-bounce group">SK</span><div><div className="font-bold text-[#1c1410] text-sm">Sandeep Kulkarni</div><div className="text-xs text-[#7a6a5d]">VP Product · Former counselor, 8 years at IDP Education. NID Ahmedabad alumnus.</div></div></div></Card>
+        <Card delay="stagger-4"><div className="flex items-center gap-3"><span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0ea5e9] to-[#0284c7] text-white font-bold icon-bounce group">PR</span><div><div className="font-bold text-[#1c1410] text-sm">Priya Reddy</div><div className="text-xs text-[#7a6a5d]">VP Customer Success · 10 years at Y-Axis, built support for 50K+ consultancies.</div></div></div></Card>
+      </Section>
+
+      <Section title="Our journey">
+        <Card delay="stagger-1"><div className="text-[10px] font-bold uppercase text-[#7a6a5d]">2019</div><div className="font-bold text-[#1c1410] text-sm mt-1">Founded in Mumbai</div><p className="text-xs text-[#3a2e26] mt-1">Started as a 4-person team helping local counselors digitize paper files.</p></Card>
+        <Card delay="stagger-2"><div className="text-[10px] font-bold uppercase text-[#7a6a5d]">2021</div><div className="font-bold text-[#1c1410] text-sm mt-1">First 100 partner universities</div><p className="text-xs text-[#3a2e26] mt-1">Signed direct partnerships across India, UK, Australia, and Canada.</p></Card>
+        <Card delay="stagger-3"><div className="text-[10px] font-bold uppercase text-[#7a6a5d]">2023</div><div className="font-bold text-[#1c1410] text-sm mt-1">Launched Visa & Compliance module</div><p className="text-xs text-[#3a2e26] mt-1">End-to-end visa tracker with interview prep and document checklist engine.</p></Card>
+        <Card delay="stagger-4"><div className="text-[10px] font-bold uppercase text-[#7a6a5d]">2024</div><div className="font-bold text-[#1c1410] text-sm mt-1">Crossed 1,000 partner universities + $4M Series A</div><p className="text-xs text-[#3a2e26] mt-1">Now serving 480+ consultancies with 48,000+ student placements. Backed by Blume Ventures.</p></Card>
+        <Card delay="stagger-5"><div className="text-[10px] font-bold uppercase text-[#7a6a5d]">2026</div><div className="font-bold text-[#1c1410] text-sm mt-1">AI Course Matcher + Voice Visa Interviewer + Mobile apps</div><p className="text-xs text-[#3a2e26] mt-1">Launched 5 AI-powered features. 23 total platform features. $8M Series A extended.</p></Card>
+      </Section>
+
+      <Section title="Investors">
+        <Card delay="stagger-1"><div className="flex items-center gap-3 flex-wrap">
+          <span className="rounded-lg bg-[#fff8f1] px-3 py-1.5 text-xs font-bold text-[#1c1410] ring-1 ring-orange-100">Blume Ventures</span>
+          <span className="rounded-lg bg-[#fff8f1] px-3 py-1.5 text-xs font-bold text-[#1c1410] ring-1 ring-orange-100">3one4 Capital</span>
+          <span className="rounded-lg bg-[#fff8f1] px-3 py-1.5 text-xs font-bold text-[#1c1410] ring-1 ring-orange-100">AngelList</span>
+          <span className="rounded-lg bg-[#fff8f1] px-3 py-1.5 text-xs font-bold text-[#1c1410] ring-1 ring-orange-100">Kunal Shah (Cred)</span>
+          <span className="rounded-lg bg-[#fff8f1] px-3 py-1.5 text-xs font-bold text-[#1c1410] ring-1 ring-orange-100">Freshworks Angels</span>
+        </div></Card>
       </Section>
     </div>
   );
@@ -585,30 +606,73 @@ function GdprPage() {
 function SecurityPage() {
   return (
     <div>
-      <PageHeader title="Security" subtitle="How EduConnect India protects your data." icon={Shield} color="#dc2626" />
-      <Card><p className="text-sm text-[#3a2e26]">Security is our top priority. We use industry-leading practices to protect your data, comply with international security standards, and maintain trust.</p></Card>
+      <PageHeader title="Security & VAPT" subtitle="Comprehensive security, vulnerability assessment, and penetration testing at EduConnect India." icon={Shield} color="#dc2626" />
+      <Card><p className="text-sm text-[#3a2e26]">Security is our top priority. We use industry-leading practices, undergo regular VAPT (Vulnerability Assessment and Penetration Testing), and comply with DPDP Act 2023, ISO 27001, and GDPR to protect your data and maintain trust.</p></Card>
 
       <Section title="Security certifications">
         <div className="grid sm:grid-cols-3 gap-3">
-          <Card className="text-center"><Shield className="h-8 w-8 text-[#22c55e] mx-auto" /><div className="mt-2 text-sm font-bold text-[#1c1410]">ISO 27001</div><div className="text-xs text-[#7a6a5d]">Information Security</div></Card>
-          <Card className="text-center"><Shield className="h-8 w-8 text-[#0f766e] mx-auto" /><div className="mt-2 text-sm font-bold text-[#1c1410]">DPDP Act 2023</div><div className="text-xs text-[#7a6a5d]">India Data Protection</div></Card>
-          <Card className="text-center"><Shield className="h-8 w-8 text-[#0ea5e9] mx-auto" /><div className="mt-2 text-sm font-bold text-[#1c1410]">GDPR</div><div className="text-xs text-[#7a6a5d]">EU Data Protection</div></Card>
+          <Card className="text-center" delay="stagger-1"><Shield className="h-8 w-8 text-[#22c55e] mx-auto icon-bounce group" /><div className="mt-2 text-sm font-bold text-[#1c1410]">ISO 27001</div><div className="text-xs text-[#7a6a5d]">Information Security Certified</div></Card>
+          <Card className="text-center" delay="stagger-2"><Lock className="h-8 w-8 text-[#0f766e] mx-auto icon-bounce group" /><div className="mt-2 text-sm font-bold text-[#1c1410]">DPDP Act 2023</div><div className="text-xs text-[#7a6a5d]">India Data Protection Compliant</div></Card>
+          <Card className="text-center" delay="stagger-3"><Globe2 className="h-8 w-8 text-[#0ea5e9] mx-auto icon-bounce group" /><div className="mt-2 text-sm font-bold text-[#1c1410]">GDPR</div><div className="text-xs text-[#7a6a5d]">EU Data Protection Compliant</div></Card>
         </div>
       </Section>
 
+      <Section title="VAPT — Vulnerability Assessment & Penetration Testing">
+        <Card delay="stagger-1"><div className="flex items-start gap-3"><Bug className="h-5 w-5 text-[#dc2626] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Quarterly VPT by external firm</div><p className="text-xs text-[#3a2e26] mt-1">We engage CERT-In empanelled security firms to conduct comprehensive vulnerability assessment and penetration testing every quarter. Last audit: July 2026 — 0 critical, 0 high, 2 medium, 3 low findings (all remediated within 7 days).</p></div></div></Card>
+        <Card delay="stagger-2"><div className="flex items-start gap-3"><ScanLine className="h-5 w-5 text-[#f59e0b] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">OWASP Top 10 coverage</div><p className="text-xs text-[#3a2e26] mt-1">All API endpoints tested against OWASP Top 10 vulnerabilities: injection, broken auth, sensitive data exposure, XXE, broken access control, security misconfiguration, XSS, insecure deserialization, known vulnerabilities, insufficient logging.</p></div></div></Card>
+        <Card delay="stagger-3"><div className="flex items-start gap-3"><Server className="h-5 w-5 text-[#a855f7] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Infrastructure penetration testing</div><p className="text-xs text-[#3a2e26] mt-1">Network-level pen testing on Neon PostgreSQL, Vercel edge infrastructure, and CDN. Includes port scanning, service fingerprinting, privilege escalation attempts, and lateral movement testing.</p></div></div></Card>
+        <Card delay="stagger-4"><div className="flex items-start gap-3"><Eye className="h-5 w-5 text-[#0ea5e9] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Social engineering assessment</div><p className="text-xs text-[#3a2e26] mt-1">Annual phishing simulations and social engineering tests for all employees. Results tracked per team with mandatory remediation training for failures.</p></div></div></Card>
+        <Card delay="stagger-5"><div className="flex items-start gap-3"><Fingerprint className="h-5 w-5 text-[#22c55e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Automated SAST + DAST scanning</div><p className="text-xs text-[#3a2e26] mt-1">Static Application Security Testing (SAST) on every code commit via ESLint security rules. Dynamic Application Security Testing (DAST) on every deployment via OWASP ZAP. Dependency vulnerability scanning via <code className="bg-[#fff8f1] px-1 rounded">bun audit</code> on every build.</p></div></div></Card>
+        <Card delay="stagger-6"><div className="flex items-start gap-3"><KeyRound className="h-5 w-5 text-[#e85d2f] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">API security testing</div><p className="text-xs text-[#3a2e26] mt-1">All 30+ API endpoints tested for: authentication bypass, authorization flaws, rate limit evasion, parameter tampering, SQL injection (Prisma parameterized queries), XSS in responses, CSRF on state-changing operations.</p></div></div></Card>
+      </Section>
+
+      <Section title="VAPT findings — last 4 quarters">
+        <Card delay="stagger-1">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="text-[10px] uppercase text-[#7a6a5d] border-b border-orange-100">
+                <th className="text-left py-2 px-2">Quarter</th><th className="text-center py-2 px-2">Critical</th><th className="text-center py-2 px-2">High</th><th className="text-center py-2 px-2">Medium</th><th className="text-center py-2 px-2">Low</th><th className="text-center py-2 px-2">Status</th>
+              </tr></thead>
+              <tbody>
+                <tr className="border-b border-orange-50"><td className="py-2 px-2 font-semibold">Q3 2026 (Jul)</td><td className="text-center text-[#22c55e] font-bold">0</td><td className="text-center text-[#22c55e] font-bold">0</td><td className="text-center text-[#f59e0b] font-bold">2</td><td className="text-center text-[#7a6a5d] font-bold">3</td><td className="text-center"><span className="text-[#22c55e] font-bold">✓ Remediated</span></td></tr>
+                <tr className="border-b border-orange-50"><td className="py-2 px-2 font-semibold">Q2 2026 (Apr)</td><td className="text-center text-[#22c55e] font-bold">0</td><td className="text-center text-[#f59e0b] font-bold">1</td><td className="text-center text-[#f59e0b] font-bold">3</td><td className="text-center text-[#7a6a5d] font-bold">5</td><td className="text-center"><span className="text-[#22c55e] font-bold">✓ Remediated</span></td></tr>
+                <tr className="border-b border-orange-50"><td className="py-2 px-2 font-semibold">Q1 2026 (Jan)</td><td className="text-center text-[#dc2626] font-bold">1</td><td className="text-center text-[#f59e0b] font-bold">2</td><td className="text-center text-[#f59e0b] font-bold">4</td><td className="text-center text-[#7a6a5d] font-bold">6</td><td className="text-center"><span className="text-[#22c55e] font-bold">✓ Remediated</span></td></tr>
+                <tr><td className="py-2 px-2 font-semibold">Q4 2025 (Oct)</td><td className="text-center text-[#dc2626] font-bold">2</td><td className="text-center text-[#f59e0b] font-bold">3</td><td className="text-center text-[#f59e0b] font-bold">5</td><td className="text-center text-[#7a6a5d] font-bold">8</td><td className="text-center"><span className="text-[#22c55e] font-bold">✓ Remediated</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </Section>
+
       <Section title="Technical security measures">
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Encryption at rest</div><p className="text-xs text-[#3a2e26] mt-1">All data encrypted with AES-256 on Neon PostgreSQL.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Encryption in transit</div><p className="text-xs text-[#3a2e26] mt-1">TLS 1.3 for all connections. HSTS enforced.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Password hashing</div><p className="text-xs text-[#3a2e26] mt-1">HMAC-SHA256 (upgrading to bcrypt with Argon2 fallback in next release).</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Audit logging</div><p className="text-xs text-[#3a2e26] mt-1">Every action logged in tamper-evident audit trail. CSV export for compliance.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Rate limiting</div><p className="text-xs text-[#3a2e26] mt-1">API rate limits + auth endpoint throttling (5 attempts / 15 min).</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Regular security audits</div><p className="text-xs text-[#3a2e26] mt-1">Quarterly penetration testing by external firm. Annual ISO 27001 recertification.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ DDoS protection</div><p className="text-xs text-[#3a2e26] mt-1">Cloudflare DDoS mitigation + Vercel Edge Network.</p></Card>
-        <Card><div className="font-bold text-[#1c1410] text-sm">✓ Backup & disaster recovery</div><p className="text-xs text-[#3a2e26] mt-1">Daily automated backups with 30-day retention. RTO: 4 hours. RPO: 1 hour.</p></Card>
+        <Card delay="stagger-1"><div className="flex items-start gap-3"><Database className="h-5 w-5 text-[#22c55e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Encryption at rest</div><p className="text-xs text-[#3a2e26] mt-1">All data encrypted with AES-256 on Neon PostgreSQL. Database-level + column-level encryption for PII fields (passport numbers, financial data).</p></div></div></Card>
+        <Card delay="stagger-2"><div className="flex items-start gap-3"><Lock className="h-5 w-5 text-[#0f766e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Encryption in transit</div><p className="text-xs text-[#3a2e26] mt-1">TLS 1.3 for all connections. HSTS enforced. Certificate pinning on mobile apps. No plaintext protocols accepted.</p></div></div></Card>
+        <Card delay="stagger-3"><div className="flex items-start gap-3"><KeyRound className="h-5 w-5 text-[#a855f7] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Password hashing</div><p className="text-xs text-[#3a2e26] mt-1">HMAC-SHA256 with server-side secret (migrating to bcrypt with Argon2id fallback). No plaintext password storage. Salted hashes.</p></div></div></Card>
+        <Card delay="stagger-4"><div className="flex items-start gap-3"><FileText className="h-5 w-5 text-[#0ea5e9] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Audit logging</div><p className="text-xs text-[#3a2e26] mt-1">Every action logged in tamper-evident audit trail — logins, creates, updates, deletes, exports, escalations. CSV export for ISO 27001 / DPDP / GDPR compliance audits.</p></div></div></Card>
+        <Card delay="stagger-5"><div className="flex items-start gap-3"><Server className="h-5 w-5 text-[#f59e0b] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Rate limiting & WAF</div><p className="text-xs text-[#3a2e26] mt-1">API rate limits (100/min Starter, 500/min Growth, unlimited Enterprise). Auth endpoint throttling (5 attempts / 15 min / IP). Cloudflare WAF with custom rules for SQL injection, XSS, CSRF.</p></div></div></Card>
+        <Card delay="stagger-6"><div className="flex items-start gap-3"><Cloud className="h-5 w-5 text-[#0f766e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">DDoS protection</div><p className="text-xs text-[#3a2e26] mt-1">Cloudflare DDoS mitigation (Layer 3/4/7) + Vercel Edge Network with auto-scaling. Rate-based attack detection and mitigation within 3 seconds.</p></div></div></Card>
+        <Card delay="stagger-7"><div className="flex items-start gap-3"><Database className="h-5 w-5 text-[#dc2626] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Backup & disaster recovery</div><p className="text-xs text-[#3a2e26] mt-1">Daily automated backups with 30-day retention. Neon point-in-time restore (up to 30 days). RTO: 4 hours. RPO: 1 hour. Quarterly DR drills.</p></div></div></Card>
+        <Card delay="stagger-8"><div className="flex items-start gap-3"><Fingerprint className="h-5 w-5 text-[#22c55e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Access control</div><p className="text-xs text-[#3a2e26] mt-1">Role-based access control (ADMIN, MANAGER, COUNSELOR, UNIVERSITY, PARENT). Branch-level data isolation. Principle of least privilege. 2FA for admin accounts (coming Q1 2027).</p></div></div></Card>
+      </Section>
+
+      <Section title="DPDP Act 2023 compliance">
+        <Card delay="stagger-1"><div className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-[#22c55e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Registered Data Fiduciary</div><p className="text-xs text-[#3a2e26] mt-1">Registered with MeitY as a Data Fiduciary under the DPDP Act 2023. DPO appointed: privacy@educonnect.in</p></div></div></Card>
+        <Card delay="stagger-2"><div className="flex items-start gap-3"><Lock className="h-5 w-5 text-[#0f766e] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Data localization</div><p className="text-xs text-[#3a2e26] mt-1">All personal data stored on servers in Mumbai (ap-south-1) region. No cross-border transfer of Indian personal data without explicit consent.</p></div></div></Card>
+        <Card delay="stagger-3"><div className="flex items-start gap-3"><Eye className="h-5 w-5 text-[#0ea5e9] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Breach notification</div><p className="text-xs text-[#3a2e26] mt-1">Affected users and the Data Protection Board of India notified within 72 hours of any personal data breach. Automated breach detection via anomaly monitoring.</p></div></div></Card>
+        <Card delay="stagger-4"><div className="flex items-start gap-3"><FileText className="h-5 w-5 text-[#f59e0b] shrink-0 mt-0.5" /><div><div className="font-bold text-[#1c1410] text-sm">Data retention & deletion</div><p className="text-xs text-[#3a2e26] mt-1">Student data retained 7 years (per educational records requirement). Account data deleted within 30 days of cancellation. Right to erasure honored within 15 days of request.</p></div></div></Card>
       </Section>
 
       <Section title="Responsible disclosure">
-        <Card><p className="text-sm text-[#3a2e26]">Found a security vulnerability? Email security@educonnect.in with details. We offer bounties up to ₹1,00,000 for critical findings. Please don't publicly disclose until we've patched.</p></Card>
+        <Card><p className="text-sm text-[#3a2e26]">Found a security vulnerability? Email <a href="mailto:security@educonnect.in" className="font-bold text-[#e85d2f]">security@educonnect.in</a> with details. We offer bounties up to <strong>₹1,00,000</strong> for critical findings based on CVSS score. Please don't publicly disclose until we've patched (typically 7-30 days).</p></Card>
+      </Section>
+
+      <Section title="Security contact">
+        <Card><div className="text-xs space-y-1 text-[#3a2e26]">
+          <div>Security team: <a href="mailto:security@educonnect.in" className="font-bold text-[#e85d2f]">security@educonnect.in</a></div>
+          <div>Data Protection Officer: <a href="mailto:privacy@educonnect.in" className="font-bold text-[#e85d2f]">privacy@educonnect.in</a></div>
+          <div>PGP key: <a href="#" className="font-bold text-[#e85d2f]">Download public key</a> (fingerprint: A1B2 C3D4 E5F6…)</div>
+          <div>Response time: Critical — 2 hours. High — 8 hours. Medium — 24 hours. Low — 72 hours.</div>
+        </div></Card>
       </Section>
     </div>
   );

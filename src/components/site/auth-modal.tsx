@@ -284,6 +284,14 @@ export default function AuthModal() {
           )}
 
           <div className="pt-2 mt-3 border-t border-orange-100 text-center text-[10px] text-[#7a6a5d]">
+            <div className="flex items-center justify-center gap-2 mb-1.5">
+              <a href="/?page=dpdp" className="inline-flex items-center gap-1 rounded-full bg-[#0f766e]/10 px-2 py-0.5 text-[9px] font-bold text-[#0f766e] hover:bg-[#0f766e]/20 transition-colors">
+                <Shield className="h-2.5 w-2.5" /> DPDP Compliant
+              </a>
+              <a href="/?page=security" className="inline-flex items-center gap-1 rounded-full bg-[#22c55e]/10 px-2 py-0.5 text-[9px] font-bold text-[#15803d] hover:bg-[#22c55e]/20 transition-colors">
+                <Shield className="h-2.5 w-2.5" /> ISO 27001
+              </a>
+            </div>
             Made & maintained by <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#1c1410] hover:text-[#e85d2f]">GuardianX</a>
           </div>
         </form>

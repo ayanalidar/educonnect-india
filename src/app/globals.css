@@ -247,3 +247,194 @@ html {
 .pulse-ring {
   animation: pulse-ring 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* ============ Cool Animations & Transitions ============ */
+
+/* Fade in up — used on scroll reveal */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Fade in scale — used on cards */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-fade-in-scale {
+  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Slide in from right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Shimmer effect — used on loading + accents */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Bounce on hover — used on icons */
+@keyframes bounceHover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Rotate on hover */
+@keyframes rotateHover {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Pulse glow */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 5px 0 rgba(232, 93, 47, 0.2); }
+  50% { box-shadow: 0 0 20px 4px rgba(232, 93, 47, 0.4); }
+}
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Wiggle */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+/* Count up — used on stats */
+@keyframes countUp {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-count-up {
+  animation: countUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger delays — apply to children */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+
+/* Hover lift — used on cards */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon hover animations — applied via group-hover */
+.group:hover .icon-bounce { animation: bounceHover 0.6s ease; }
+.group:hover .icon-rotate { animation: rotateHover 0.8s linear; }
+.group:hover .icon-wiggle { animation: wiggle 0.5s ease; }
+.group:hover .icon-scale { transform: scale(1.2); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Gradient shift — animated gradient backgrounds */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+}
+
+/* Smooth page transition */
+.page-enter {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Glassmorphism hover */
+.glass-hover {
+  transition: backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-hover:hover {
+  backdrop-filter: blur(20px) saturate(200%);
+  box-shadow: 0 8px 32px -4px rgba(232, 93, 47, 0.2);
+}
+
+/* Card shimmer border on hover */
+.card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.card-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.card-shimmer:hover::before {
+  left: 100%;
+}

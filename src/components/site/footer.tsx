@@ -2,6 +2,7 @@
 
 import {
   GraduationCap,
+  Shield,
   Twitter,
   Linkedin,
   Facebook,
@@ -172,6 +173,18 @@ export default function Footer() {
             · Made with care in Mumbai 🇮🇳
             · Made & maintained by{" "}
             <a href="https://github.com/ayanalidar/educonnect-india" target="_blank" rel="noopener noreferrer" className="font-bold text-[#f59e0b] hover:underline">GuardianX</a>
+          </div>
+
+          <div className="flex items-center gap-3 mt-3 sm:mt-0">
+            <a href="/?page=dpdp" className="inline-flex items-center gap-1.5 rounded-full bg-white/5 ring-1 ring-white/10 px-3 h-7 text-[10px] font-bold text-[#0f766e] hover:bg-white/10 transition-colors">
+              <Shield className="h-3 w-3" /> DPDP Compliant
+            </a>
+            <a href="/?page=security" className="inline-flex items-center gap-1.5 rounded-full bg-white/5 ring-1 ring-white/10 px-3 h-7 text-[10px] font-bold text-[#22c55e] hover:bg-white/10 transition-colors">
+              <Shield className="h-3 w-3" /> ISO 27001
+            </a>
+            <a href="/?page=gdpr" className="inline-flex items-center gap-1.5 rounded-full bg-white/5 ring-1 ring-white/10 px-3 h-7 text-[10px] font-bold text-[#0ea5e9] hover:bg-white/10 transition-colors">
+              <Shield className="h-3 w-3" /> GDPR
+            </a>
           </div>
 
           <div className="flex items-center gap-2">

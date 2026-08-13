@@ -6,6 +6,8 @@ import {
   Users, CheckCircle2, ArrowRight, GraduationCap, ChevronLeft,
   Calendar, Globe2, Shield,
 } from "lucide-react";
+import Navbar from "@/components/site/navbar";
+import Footer from "@/components/site/footer";
 
 type Profile = {
   id: string;
@@ -51,11 +53,15 @@ export default function ConsultantLandingPage({ slug, onBack }: { slug: string; 
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fff8f1] gap-4">
-        <div className="text-2xl font-bold text-[#1c1410]">Consultant not found</div>
-        <button onClick={onBack} className="rounded-full bg-[#1c1410] text-white px-5 h-10 text-sm font-semibold">
-          Back to EduConnect
-        </button>
+      <div className="min-h-screen flex flex-col bg-[#fff8f1]">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center gap-4">
+          <div className="text-2xl font-bold text-[#1c1410]">Consultant not found</div>
+          <button onClick={onBack} className="rounded-full bg-[#1c1410] text-white px-5 h-10 text-sm font-semibold">
+            Back to EduConnect
+          </button>
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -63,21 +69,8 @@ export default function ConsultantLandingPage({ slug, onBack }: { slug: string; 
   const initials = profile.user.name.split(" ").map((n) => n[0]).join("").slice(0, 2);
 
   return (
-    <div className="min-h-screen bg-[#fff8f1]">
-      {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-orange-100">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 h-[60px] flex items-center justify-between">
-          <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#7a6a5d] hover:text-[#e85d2f]">
-            <ChevronLeft className="h-4 w-4" /> EduConnect India
-          </button>
-          <div className="flex items-center gap-2">
-            <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#e85d2f] to-[#f59e0b] text-white">
-              <GraduationCap className="h-4 w-4" />
-            </span>
-            <span className="text-sm font-extrabold text-[#1c1410]">EduConnect</span>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col bg-[#fff8f1]">
+      <Navbar />
 
       {/* Hero */}
       <section className="relative overflow-hidden pt-12 pb-16">
@@ -228,6 +221,7 @@ export default function ConsultantLandingPage({ slug, onBack }: { slug: string; 
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
