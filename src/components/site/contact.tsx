@@ -40,18 +40,38 @@ export default function Contact() {
     e.preventDefault();
     setSubmitting(true);
 
-    // Simulate API call (no backend required for landing page demo)
-    await new Promise((r) => setTimeout(r, 900));
+    const formEl = e.target as HTMLFormElement;
+    const fd = new FormData(formEl);
+    const payload = {
+      fullName: fd.get("fullName") as string,
+      consultancy: fd.get("consultancy") as string,
+      email: fd.get("email") as string,
+      phone: fd.get("phone") as string,
+      studentCount: fd.get("studentCount") as string,
+      interest: fd.get("interest") as string,
+    };
 
-    setSubmitting(false);
-    setSubmitted(true);
-    toast({
-      title: "Thank you — we'll be in touch!",
-      description:
-        "An EduConnect specialist will reach out within 1 business hour to schedule your demo.",
-    });
-    (e.target as HTMLFormElement).reset();
-    setTimeout(() => setSubmitted(false), 6000);
+    try {
+      // Persist to backend (Lead model)
+      await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => null); // don't block UX if it fails
+
+      await new Promise((r) => setTimeout(r, 600));
+
+      setSubmitted(true);
+      toast({
+        title: "Thank you — we'll be in touch!",
+        description:
+          "An EduConnect specialist will reach out within 1 business hour to schedule your demo.",
+      });
+      formEl.reset();
+      setTimeout(() => setSubmitted(false), 6000);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -160,6 +180,7 @@ export default function Contact() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Full name" required>
                     <Input
+                      name="fullName"
                       required
                       placeholder="Aarav Sharma"
                       className="h-11 rounded-xl border-orange-200 focus-visible:ring-[#e85d2f]"
@@ -167,6 +188,7 @@ export default function Contact() {
                   </Field>
                   <Field label="Consultancy name" required>
                     <Input
+                      name="consultancy"
                       required
                       placeholder="Global Pathways"
                       className="h-11 rounded-xl border-orange-200 focus-visible:ring-[#e85d2f]"
@@ -178,6 +200,7 @@ export default function Contact() {
                   <Field label="Work email" required>
                     <Input
                       type="email"
+                      name="email"
                       required
                       placeholder="aarav@globalpathways.in"
                       className="h-11 rounded-xl border-orange-200 focus-visible:ring-[#e85d2f]"
@@ -185,6 +208,7 @@ export default function Contact() {
                   </Field>
                   <Field label="Phone (WhatsApp)" required>
                     <Input
+                      name="phone"
                       required
                       placeholder="+91 98765 43210"
                       className="h-11 rounded-xl border-orange-200 focus-visible:ring-[#e85d2f]"
@@ -194,6 +218,7 @@ export default function Contact() {
 
                 <Field label="How many students do you manage annually?">
                   <Input
+                    name="studentCount"
                     placeholder="e.g. 200–500"
                     className="h-11 rounded-xl border-orange-200 focus-visible:ring-[#e85d2f]"
                   />
@@ -201,6 +226,7 @@ export default function Contact() {
 
                 <Field label="What are you most interested in?">
                   <Textarea
+                    name="interest"
                     placeholder="AI Course Matcher, Visa module, partner universities in UK/Canada…"
                     className="rounded-xl border-orange-200 focus-visible:ring-[#e85d2f] min-h-[96px]"
                   />

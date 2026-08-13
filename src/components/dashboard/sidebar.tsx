@@ -1,0 +1,190 @@
+// Dashboard sidebar — navigation
+// Made & maintained by GuardianX
+
+"use client";
+
+import {
+  LayoutDashboard,
+  Users,
+  FolderCheck,
+  School,
+  Plane,
+  MessagesSquare,
+  Wallet,
+  BarChart3,
+  Plug,
+  Map,
+  Settings,
+  GraduationCap,
+  LogOut,
+  Globe,
+  ChevronLeft,
+  Shield,
+} from "lucide-react";
+import { useAppStore } from "@/store/app-store";
+import { useI18n } from "@/context/i18n";
+
+export type DashboardView =
+  | "overview"
+  | "students"
+  | "applications"
+  | "universities"
+  | "visa"
+  | "communication"
+  | "finance"
+  | "analytics"
+  | "integrations"
+  | "roadmap"
+  | "settings";
+
+const NAV: { key: DashboardView; icon: React.ElementType; tKey: string }[] = [
+  { key: "overview", icon: LayoutDashboard, tKey: "nav.overview" },
+  { key: "students", icon: Users, tKey: "nav.students" },
+  { key: "applications", icon: FolderCheck, tKey: "nav.applications" },
+  { key: "universities", icon: School, tKey: "nav.universities" },
+  { key: "visa", icon: Plane, tKey: "nav.visa" },
+  { key: "communication", icon: MessagesSquare, tKey: "nav.communication" },
+  { key: "finance", icon: Wallet, tKey: "nav.finance" },
+  { key: "analytics", icon: BarChart3, tKey: "nav.analytics" },
+  { key: "integrations", icon: Plug, tKey: "nav.integrations" },
+  { key: "roadmap", icon: Map, tKey: "nav.roadmap" },
+  { key: "settings", icon: Settings, tKey: "nav.settings" },
+];
+
+export default function Sidebar({
+  active,
+  setActive,
+  mobileOpen,
+  setMobileOpen,
+}: {
+  active: DashboardView;
+  setActive: (v: DashboardView) => void;
+  mobileOpen: boolean;
+  setMobileOpen: (b: boolean) => void;
+}) {
+  const { user, logout, setView } = useAppStore();
+  const { t } = useI18n();
+
+  const goLanding = () => {
+    setView("landing");
+    setMobileOpen(false);
+  };
+
+  return (
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-[#1c1410]/50 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed lg:sticky top-0 z-50 lg:z-10 h-screen w-[260px] shrink-0 bg-[#1c1410] text-white flex flex-col transition-transform duration-300 ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        {/* Logo */}
+        <div className="px-5 h-[68px] flex items-center justify-between border-b border-white/10">
+          <div className="flex items-center gap-2.5">
+            <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#e85d2f] to-[#f59e0b] shadow-lg">
+              <GraduationCap className="h-4.5 w-4.5" />
+              <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[#0f766e] ring-2 ring-[#1c1410]" />
+            </span>
+            <div className="leading-none">
+              <div className="text-[15px] font-extrabold tracking-tight">EduConnect</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#e85d2f]">
+                India
+              </div>
+            </div>
+          </div>
+          <button
+            className="lg:hidden text-white/60 hover:text-white"
+            onClick={() => setMobileOpen(false)}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+          {NAV.map((n) => {
+            const isActive = active === n.key;
+            return (
+              <button
+                key={n.key}
+                onClick={() => {
+                  setActive(n.key);
+                  setMobileOpen(false);
+                }}
+                className={`group w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
+                  isActive
+                    ? "bg-gradient-to-r from-[#e85d2f]/20 to-transparent text-white"
+                    : "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                }`}
+              >
+                <span
+                  className={`inline-flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
+                    isActive
+                      ? "bg-gradient-to-br from-[#e85d2f] to-[#f59e0b] text-white shadow-md"
+                      : "bg-white/[0.06] text-white/70 group-hover:text-white"
+                  }`}
+                >
+                  <n.icon className="h-4 w-4" />
+                </span>
+                {t(n.tKey)}
+                {isActive && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#f59e0b]" />}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Bottom block */}
+        <div className="px-3 pb-3 space-y-2">
+          {/* Branch card */}
+          <div className="rounded-xl bg-white/[0.04] ring-1 ring-white/10 p-3">
+            <div className="flex items-center gap-2">
+              <div
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-white text-xs font-bold"
+                style={{ background: user?.avatarColor || "#e85d2f" }}
+              >
+                {user?.name?.split(" ").map((n) => n[0]).join("").slice(0, 2) || "RM"}
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white truncate">{user?.name}</div>
+                <div className="text-[10px] text-white/60 truncate">
+                  {user?.role} · {user?.branch || "HQ"}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Back to website */}
+          <button
+            onClick={goLanding}
+            className="w-full flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-medium text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            {t("common.back")}
+          </button>
+
+          {/* Logout */}
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-medium text-white/60 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </button>
+
+          {/* GuardianX credit */}
+          <div className="pt-1.5 px-3 flex items-center justify-center gap-1.5 text-[10px] text-white/40">
+            <Shield className="h-3 w-3" />
+            {t("brand.madeBy")} <strong className="text-white/70">GuardianX</strong>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}

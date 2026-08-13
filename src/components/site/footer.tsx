@@ -142,6 +142,8 @@ export default function Footer() {
           <div className="text-xs text-white/50">
             © {new Date().getFullYear()} EduConnect India Technologies Pvt. Ltd.
             · Made with care in Mumbai 🇮🇳
+            · Made & maintained by{" "}
+            <a href="#" className="font-bold text-[#f59e0b] hover:underline">GuardianX</a>
           </div>
 
           <div className="flex items-center gap-2">

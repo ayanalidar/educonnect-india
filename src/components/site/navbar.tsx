@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, GraduationCap, ArrowRight } from "lucide-react";
+import { Menu, X, GraduationCap, ArrowRight, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAppStore } from "@/store/app-store";
 
 const NAV_LINKS = [
   { href: "#home", label: "Home" },
@@ -16,6 +17,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { user, openAuthModal, setView } = useAppStore();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -63,18 +65,31 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <a
-              href="#contact"
-              className="text-sm font-semibold text-[#1c1410] hover:text-[#e85d2f] transition-colors"
-            >
-              Sign in
-            </a>
-            <a href="#contact">
-              <Button className="bg-[#e85d2f] hover:bg-[#c8451a] text-white rounded-full px-5 h-10 font-semibold shadow-lg shadow-orange-300/40 transition-all hover:shadow-orange-400/60 hover:-translate-y-0.5">
-                Book a Demo
-                <ArrowRight className="ml-1.5 h-4 w-4" />
-              </Button>
-            </a>
+            {user ? (
+              <button
+                onClick={() => setView("dashboard")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#1c1410] hover:bg-[#e85d2f] text-white px-5 h-10 font-semibold shadow-lg transition-all hover:-translate-y-0.5"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Go to Dashboard
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => openAuthModal("signin")}
+                  className="text-sm font-semibold text-[#1c1410] hover:text-[#e85d2f] transition-colors"
+                >
+                  Sign in
+                </button>
+                <Button
+                  onClick={() => openAuthModal("signup")}
+                  className="bg-[#e85d2f] hover:bg-[#c8451a] text-white rounded-full px-5 h-10 font-semibold shadow-lg shadow-orange-300/40 transition-all hover:shadow-orange-400/60 hover:-translate-y-0.5"
+                >
+                  Start free trial
+                  <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -101,12 +116,23 @@ export default function Navbar() {
                   {l.label}
                 </a>
               ))}
-              <a href="#contact" onClick={() => setOpen(false)}>
-                <Button className="mt-2 w-full bg-[#e85d2f] hover:bg-[#c8451a] text-white rounded-full h-11 font-semibold">
-                  Book a Demo
-                  <ArrowRight className="ml-1.5 h-4 w-4" />
-                </Button>
-              </a>
+              {user ? (
+                <button
+                  onClick={() => { setView("dashboard"); setOpen(false); }}
+                  className="mt-2 w-full bg-[#1c1410] text-white rounded-full h-11 font-semibold"
+                >
+                  <LayoutDashboard className="inline h-4 w-4 mr-1.5" />
+                  Go to Dashboard
+                </button>
+              ) : (
+                <button
+                  onClick={() => { openAuthModal("signup"); setOpen(false); }}
+                  className="mt-2 w-full bg-[#e85d2f] hover:bg-[#c8451a] text-white rounded-full h-11 font-semibold"
+                >
+                  Start free trial
+                  <ArrowRight className="ml-1.5 h-4 w-4 inline" />
+                </button>
+              )}
             </div>
           </div>
         )}
