@@ -6,10 +6,11 @@
 import { useEffect, useState } from "react";
 import {
   Building2, Users, Phone, Mail, MapPin, TrendingUp, Award,
-  FolderCheck, Target, ChevronRight, Shield, X,
+  FolderCheck, Target, ChevronRight, Shield, X, Pencil, Trash2, Plus, Loader2,
 } from "lucide-react";
 import { apiFetch } from "@/store/app-store";
 import { Card, Empty, Spinner } from "@/components/dashboard/_ui";
+import { useToast } from "@/hooks/use-toast";
 
 type BranchMember = {
   id: string;
@@ -39,10 +40,36 @@ export default function BranchesView() {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Branch | null>(null);
+  const [editing, setEditing] = useState<Branch | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  useEffect(() => {
-    apiFetch("/api/branches").then((d) => setBranches(d.branches)).finally(() => setLoading(false));
-  }, []);
+  const load = async () => {
+    setLoading(true);
+    try {
+      const data = await apiFetch("/api/branches");
+      setBranches(data.branches);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const deleteBranch = async (b: Branch) => {
+    if (!confirm(`Delete ${b.name}? This cannot be undone.`)) return;
+    setDeleting(b.id);
+    try {
+      await apiFetch(`/api/branches/${b.id}`, { method: "DELETE" });
+      toast({ title: "Branch deleted", description: `${b.name} removed.` });
+      load();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   const totalMembers = branches.reduce((s, b) => s + b.memberCount, 0);
   const totalStudents = branches.reduce((s, b) => s + b.studentCount, 0);
@@ -79,6 +106,16 @@ export default function BranchesView() {
         <StatCard label="Total members" value={totalMembers} color="#0ea5e9" icon={Users} />
         <StatCard label="Total students" value={totalStudents} color="#e85d2f" icon={Target} />
         <StatCard label="Conversion rate" value={`${totalApps > 0 ? Math.round((totalOffers / totalApps) * 100) : 0}%`} color="#22c55e" icon={TrendingUp} />
+      </div>
+
+      {/* Add button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowAdd(true)}
+          className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#a855f7] to-[#e85d2f] text-white px-4 h-10 text-sm font-semibold shadow-lg shadow-purple-300/40"
+        >
+          <Plus className="h-4 w-4" /> Add branch
+        </button>
       </div>
 
       {/* Branch grid */}
@@ -124,13 +161,103 @@ export default function BranchesView() {
                   <Stat label="Conv" value={`${b.conversionRate}%`} color="#22c55e" />
                 </div>
               </button>
+
+              {/* Edit + Delete */}
+              <div className="mt-2 flex items-center gap-1.5">
+                <button
+                  onClick={(e) => { e.stopPropagation(); setEditing(b); }}
+                  className="inline-flex items-center gap-1 rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-orange-100 hover:text-[#e85d2f] px-2.5 h-7 text-[10px] font-semibold"
+                >
+                  <Pencil className="h-3 w-3" /> Edit
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); deleteBranch(b); }}
+                  disabled={deleting === b.id}
+                  className="inline-flex items-center gap-1 rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-red-50 hover:text-red-600 px-2.5 h-7 text-[10px] font-semibold disabled:opacity-50"
+                >
+                  {deleting === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />} Delete
+                </button>
+              </div>
             </Card>
           ))}
         </div>
       )}
 
       {selected && <BranchModal branch={selected} onClose={() => setSelected(null)} />}
+      {showAdd && <BranchEditModal onClose={() => setShowAdd(false)} onSaved={() => { setShowAdd(false); load(); }} />}
+      {editing && <BranchEditModal branch={editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); load(); }} />}
     </div>
+  );
+}
+
+function BranchEditModal({ branch, onClose, onSaved }: { branch?: Branch | null; onClose: () => void; onSaved: () => void }) {
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    name: branch?.name || "",
+    city: branch?.city || "",
+    address: branch?.address || "",
+    phone: branch?.phone || "",
+    email: branch?.email || "",
+    managerName: branch?.managerName || "",
+  });
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (branch) {
+        await apiFetch(`/api/branches/${branch.id}`, { method: "PUT", body: JSON.stringify(form) });
+        toast({ title: "Branch updated" });
+      } else {
+        await apiFetch("/api/branches/create", { method: "POST", body: JSON.stringify(form) });
+        toast({ title: "Branch added" });
+      }
+      onSaved();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-[#1c1410]/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-3xl bg-white shadow-2xl ring-1 ring-orange-100 max-h-[90vh] overflow-y-auto">
+        <div className="h-1.5 bg-gradient-to-r from-[#a855f7] to-[#e85d2f]" />
+        <div className="p-6 sm:p-7">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-xl font-extrabold text-[#1c1410]">{branch ? "Edit branch" : "Add branch"}</h2>
+            <button onClick={onClose} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-orange-100">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <form onSubmit={submit} className="space-y-3">
+            <In label="Branch name *" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
+            <In label="City *" value={form.city} onChange={(v) => setForm({ ...form, city: v })} required />
+            <In label="Address" value={form.address} onChange={(v) => setForm({ ...form, address: v })} />
+            <div className="grid grid-cols-2 gap-3">
+              <In label="Phone" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+              <In label="Email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
+            </div>
+            <In label="Manager name" value={form.managerName} onChange={(v) => setForm({ ...form, managerName: v })} />
+            <button type="submit" disabled={saving}
+              className="w-full h-11 rounded-full bg-gradient-to-r from-[#a855f7] to-[#e85d2f] text-white font-semibold shadow-lg flex items-center justify-center gap-2 disabled:opacity-70">
+              {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : branch ? "Save changes" : "Add branch"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function In({ label, value, onChange, required }: { label: string; value: string; onChange: (v: string) => void; required?: boolean }) {
+  return (
+    <label className="block">
+      <span className="block text-xs font-semibold text-[#3a2e26] mb-1.5">{label}</span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} required={required}
+        className="h-10 w-full rounded-xl border border-orange-200 bg-white px-3 text-sm focus:border-[#a855f7] focus:outline-none" />
+    </label>
   );
 }
 

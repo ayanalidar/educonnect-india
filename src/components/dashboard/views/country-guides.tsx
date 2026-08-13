@@ -6,10 +6,11 @@
 import { useEffect, useState } from "react";
 import {
   Globe2, MapPin, DollarSign, Clock, Briefcase, GraduationCap,
-  Plane, FileText, Search, X, ChevronRight, Sparkles,
+  Plane, FileText, Search, X, ChevronRight, Sparkles, Pencil, Trash2, Plus, Loader2,
 } from "lucide-react";
 import { apiFetch } from "@/store/app-store";
 import { Card, Empty, Spinner } from "@/components/dashboard/_ui";
+import { useToast } from "@/hooks/use-toast";
 
 type Guide = {
   id: string;
@@ -37,10 +38,36 @@ export default function CountryGuidesView() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<Guide | null>(null);
+  const [editing, setEditing] = useState<Guide | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  useEffect(() => {
-    apiFetch("/api/country-guides").then((d) => setGuides(d.guides)).finally(() => setLoading(false));
-  }, []);
+  const load = async () => {
+    setLoading(true);
+    try {
+      const data = await apiFetch("/api/country-guides");
+      setGuides(data.guides);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const deleteGuide = async (g: Guide) => {
+    if (!confirm(`Delete ${g.country} guide? This cannot be undone.`)) return;
+    setDeleting(g.id);
+    try {
+      await apiFetch(`/api/country-guides/${g.id}`, { method: "DELETE" });
+      toast({ title: "Guide deleted", description: `${g.country} removed.` });
+      load();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   const filtered = q
     ? guides.filter((g) => g.country.toLowerCase().includes(q.toLowerCase()) || g.popularPrograms.toLowerCase().includes(q.toLowerCase()))
@@ -70,15 +97,23 @@ export default function CountryGuidesView() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="flex items-center gap-2 rounded-full bg-white ring-1 ring-orange-200 px-3.5 h-10 max-w-md">
-        <Search className="h-4 w-4 text-[#7a6a5d]" />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search by country or program…"
-          className="flex-1 bg-transparent text-sm focus:outline-none"
-        />
+      {/* Search + Add */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 rounded-full bg-white ring-1 ring-orange-200 px-3.5 h-10 flex-1 max-w-md">
+          <Search className="h-4 w-4 text-[#7a6a5d]" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search by country or program…"
+            className="flex-1 bg-transparent text-sm focus:outline-none"
+          />
+        </div>
+        <button
+          onClick={() => setShowAdd(true)}
+          className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0f766e] to-[#0ea5e9] text-white px-4 h-10 text-sm font-semibold shadow-lg shadow-emerald-300/40"
+        >
+          <Plus className="h-4 w-4" /> Add guide
+        </button>
       </div>
 
       {/* Grid */}
@@ -135,6 +170,23 @@ export default function CountryGuidesView() {
                     View guide <ChevronRight className="h-3 w-3" />
                   </span>
                 </div>
+
+                {/* Edit + Delete */}
+                <div className="mt-2 flex items-center gap-1.5">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setEditing(g); }}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-orange-100 hover:text-[#e85d2f] px-2.5 h-7 text-[10px] font-semibold"
+                  >
+                    <Pencil className="h-3 w-3" /> Edit
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteGuide(g); }}
+                    disabled={deleting === g.id}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-red-50 hover:text-red-600 px-2.5 h-7 text-[10px] font-semibold disabled:opacity-50"
+                  >
+                    {deleting === g.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />} Delete
+                  </button>
+                </div>
               </div>
             </button>
           ))}
@@ -143,7 +195,103 @@ export default function CountryGuidesView() {
 
       {/* Detail modal */}
       {selected && <GuideModal guide={selected} onClose={() => setSelected(null)} />}
+      {showAdd && <GuideEditModal onClose={() => setShowAdd(false)} onSaved={() => { setShowAdd(false); load(); }} />}
+      {editing && <GuideEditModal guide={editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); load(); }} />}
     </div>
+  );
+}
+
+function GuideEditModal({ guide, onClose, onSaved }: { guide?: Guide | null; onClose: () => void; onSaved: () => void }) {
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    country: guide?.country || "", flag: guide?.flag || "🏳️", capital: guide?.capital || "",
+    currency: guide?.currency || "", language: guide?.language || "",
+    visaType: guide?.visaType || "", visaProcessingTime: guide?.visaProcessingTime || "", visaFee: guide?.visaFee || "",
+    intakeMonths: guide?.intakeMonths || "", avgTuition: guide?.avgTuition || "", avgLivingCost: guide?.avgLivingCost || "",
+    workWhileStudying: guide?.workWhileStudying || "", postStudyVisa: guide?.postStudyVisa || "",
+    popularPrograms: guide?.popularPrograms || "", topUniversities: guide?.topUniversities || "",
+    description: guide?.description || "", heroColor: guide?.heroColor || "#e85d2f",
+  });
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (guide) {
+        await apiFetch(`/api/country-guides/${guide.id}`, { method: "PUT", body: JSON.stringify(form) });
+        toast({ title: "Guide updated" });
+      } else {
+        await apiFetch("/api/country-guides/create", { method: "POST", body: JSON.stringify(form) });
+        toast({ title: "Guide added" });
+      }
+      onSaved();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-[#1c1410]/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl ring-1 ring-orange-100">
+        <div className="h-1.5 bg-gradient-to-r from-[#0f766e] to-[#0ea5e9]" />
+        <div className="p-6 sm:p-7">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-xl font-extrabold text-[#1c1410]">{guide ? "Edit country guide" : "Add country guide"}</h2>
+            <button onClick={onClose} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-orange-100">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <form onSubmit={submit} className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <In label="Country *" value={form.country} onChange={(v) => setForm({ ...form, country: v })} required />
+              <In label="Flag" value={form.flag} onChange={(v) => setForm({ ...form, flag: v })} placeholder="🇬🇧" />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <In label="Capital" value={form.capital} onChange={(v) => setForm({ ...form, capital: v })} />
+              <In label="Currency" value={form.currency} onChange={(v) => setForm({ ...form, currency: v })} />
+              <In label="Language" value={form.language} onChange={(v) => setForm({ ...form, language: v })} />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <In label="Visa type" value={form.visaType} onChange={(v) => setForm({ ...form, visaType: v })} />
+              <In label="Processing time" value={form.visaProcessingTime} onChange={(v) => setForm({ ...form, visaProcessingTime: v })} />
+              <In label="Visa fee" value={form.visaFee} onChange={(v) => setForm({ ...form, visaFee: v })} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <In label="Intakes" value={form.intakeMonths} onChange={(v) => setForm({ ...form, intakeMonths: v })} />
+              <In label="Post-study visa" value={form.postStudyVisa} onChange={(v) => setForm({ ...form, postStudyVisa: v })} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <In label="Avg tuition" value={form.avgTuition} onChange={(v) => setForm({ ...form, avgTuition: v })} />
+              <In label="Avg living cost" value={form.avgLivingCost} onChange={(v) => setForm({ ...form, avgLivingCost: v })} />
+            </div>
+            <In label="Work while studying" value={form.workWhileStudying} onChange={(v) => setForm({ ...form, workWhileStudying: v })} />
+            <In label="Popular programs" value={form.popularPrograms} onChange={(v) => setForm({ ...form, popularPrograms: v })} />
+            <In label="Top universities" value={form.topUniversities} onChange={(v) => setForm({ ...form, topUniversities: v })} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-[#3a2e26] mb-1.5">Description</span>
+              <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3}
+                className="w-full rounded-xl border border-orange-200 bg-white p-3 text-sm focus:border-[#0f766e] focus:outline-none resize-none" />
+            </label>
+            <button type="submit" disabled={saving}
+              className="w-full h-11 rounded-full bg-gradient-to-r from-[#0f766e] to-[#0ea5e9] text-white font-semibold shadow-lg flex items-center justify-center gap-2 disabled:opacity-70">
+              {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : guide ? "Save changes" : "Add guide"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function In({ label, value, onChange, required, placeholder }: { label: string; value: string; onChange: (v: string) => void; required?: boolean; placeholder?: string }) {
+  return (
+    <label className="block">
+      <span className="block text-xs font-semibold text-[#3a2e26] mb-1.5">{label}</span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} required={required} placeholder={placeholder}
+        className="h-10 w-full rounded-xl border border-orange-200 bg-white px-3 text-sm focus:border-[#0f766e] focus:outline-none" />
+    </label>
   );
 }
 

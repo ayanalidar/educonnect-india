@@ -9,7 +9,7 @@ import {
   Plug, Settings, GraduationCap, LogOut, Globe,
   ChevronLeft, Shield, Sparkles, FileSearch, Beaker,
   Award, Bell, Mic, Smartphone, Calendar, Gift, Globe2,
-  Building2, Zap,
+  Building2, Zap, FileText,
 } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { useI18n } from "@/context/i18n";
@@ -36,6 +36,7 @@ export type DashboardView =
   | "branches"
   | "lead-magnets"
   | "audit-logs"
+  | "content-editor"
   | "innovation"
   | "settings";
 
@@ -77,6 +78,7 @@ const NAV_SECTIONS: { title: string; items: { key: DashboardView; icon: React.El
       { key: "analytics", icon: BarChart3, tKey: "nav.analytics" },
       { key: "branches", icon: Building2, tKey: "nav.branches", badge: "NEW" },
       { key: "audit-logs", icon: Shield, tKey: "nav.audit-logs", badge: "NEW" },
+      { key: "content-editor", icon: FileText, tKey: "nav.content-editor", badge: "NEW" },
       { key: "integrations", icon: Plug, tKey: "nav.integrations" },
       { key: "mobile", icon: Smartphone, tKey: "nav.mobile", badge: "NEW" },
       { key: "innovation", icon: Beaker, tKey: "nav.innovation", badge: "NEW" },

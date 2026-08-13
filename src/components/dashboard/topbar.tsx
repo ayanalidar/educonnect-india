@@ -57,6 +57,7 @@ export default function Topbar({
     branches: "branches.subtitle",
     "lead-magnets": "lead-magnets.subtitle",
     "audit-logs": "audit-logs.subtitle",
+    "content-editor": "content-editor.subtitle",
     innovation: "innovation.subtitle",
     settings: "settings.subtitle",
   };

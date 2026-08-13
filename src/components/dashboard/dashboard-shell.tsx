@@ -27,6 +27,7 @@ import CountryGuidesView from "@/components/dashboard/views/country-guides";
 import BranchesView from "@/components/dashboard/views/branches";
 import LeadMagnetsView from "@/components/dashboard/views/lead-magnets";
 import AuditLogsView from "@/components/dashboard/views/audit-logs";
+import ContentEditorView from "@/components/dashboard/views/content-editor";
 import InnovationLabView from "@/components/dashboard/views/innovation-lab";
 import SettingsView from "@/components/dashboard/views/settings";
 import { useAppStore } from "@/store/app-store";
@@ -73,6 +74,7 @@ export default function DashboardShell() {
           {view === "branches" && <BranchesView />}
           {view === "lead-magnets" && <LeadMagnetsView />}
           {view === "audit-logs" && <AuditLogsView />}
+          {view === "content-editor" && <ContentEditorView />}
           {view === "innovation" && <InnovationLabView />}
           {view === "settings" && <SettingsView />}
         </main>

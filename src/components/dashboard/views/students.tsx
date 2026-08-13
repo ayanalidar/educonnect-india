@@ -4,7 +4,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Search, Mail, Phone, MapPin, X, Loader2, Users } from "lucide-react";
+import { Plus, Search, Mail, Phone, MapPin, X, Loader2, Users, Pencil, Trash2 } from "lucide-react";
 import { apiFetch, useAppStore } from "@/store/app-store";
 import { Card, StatusBadge, Avatar, Empty, Spinner } from "@/components/dashboard/_ui";
 import { useToast } from "@/hooks/use-toast";
@@ -39,6 +39,8 @@ export default function StudentsView() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState<Student | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const { toast } = useToast();
 
   const load = async () => {
@@ -61,6 +63,20 @@ export default function StudentsView() {
     const id = setTimeout(load, 300);
     return () => clearTimeout(id);
   }, [q]);
+
+  const deleteStudent = async (s: Student) => {
+    if (!confirm(`Delete ${s.firstName} ${s.lastName}? This cannot be undone.`)) return;
+    setDeleting(s.id);
+    try {
+      await apiFetch(`/api/students/${s.id}`, { method: "DELETE" });
+      toast({ title: "Student deleted", description: `${s.firstName} ${s.lastName} removed.` });
+      load();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -118,6 +134,7 @@ export default function StudentsView() {
                   <th className="text-left font-bold px-4 py-3 hidden lg:table-cell">Academic</th>
                   <th className="text-left font-bold px-4 py-3 hidden xl:table-cell">Apps</th>
                   <th className="text-left font-bold px-4 py-3">Status</th>
+                  <th className="text-right font-bold px-4 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -153,6 +170,25 @@ export default function StudentsView() {
                       </span>
                     </td>
                     <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setEditing(s)}
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#fff8f1] text-[#7a6a5d] hover:bg-orange-100 hover:text-[#e85d2f]"
+                          title="Edit"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => deleteStudent(s)}
+                          disabled={deleting === s.id}
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#fff8f1] text-[#7a6a5d] hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                          title="Delete"
+                        >
+                          {deleting === s.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -162,32 +198,51 @@ export default function StudentsView() {
       </Card>
 
       {showAdd && <AddStudentModal onClose={() => setShowAdd(false)} onCreated={() => { setShowAdd(false); load(); }} />}
+      {editing && <AddStudentModal student={editing} onClose={() => setEditing(null)} onCreated={() => { setEditing(null); load(); }} />}
     </div>
   );
 }
 
-function AddStudentModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+function AddStudentModal({ onClose, onCreated, student }: { onClose: () => void; onCreated: () => void; student?: Student | null }) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    firstName: "", lastName: "", email: "", phone: "",
-    city: "", targetCountry: "", targetProgram: "", intake: "Fall 2026",
-    budget: "", academicScore: "", englishScore: "",
-    status: "LEAD", source: "Website", notes: "",
+    firstName: student?.firstName || "",
+    lastName: student?.lastName || "",
+    email: student?.email || "",
+    phone: student?.phone || "",
+    city: student?.city || "",
+    targetCountry: student?.targetCountry || "",
+    targetProgram: student?.targetProgram || "",
+    intake: student?.intake || "Fall 2026",
+    budget: student?.budget?.toString() || "",
+    academicScore: student?.academicScore?.toString() || "",
+    englishScore: student?.englishScore || "",
+    status: student?.status || "LEAD",
+    source: student?.source || "Website",
+    notes: student?.notes || "",
   });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     try {
-      await apiFetch("/api/students", {
-        method: "POST",
-        body: JSON.stringify(form),
-      });
-      toast({ title: "Student added", description: `${form.firstName} ${form.lastName} is now in your pipeline.` });
+      if (student) {
+        await apiFetch(`/api/students/${student.id}`, {
+          method: "PUT",
+          body: JSON.stringify(form),
+        });
+        toast({ title: "Student updated", description: `${form.firstName} ${form.lastName} saved.` });
+      } else {
+        await apiFetch("/api/students", {
+          method: "POST",
+          body: JSON.stringify(form),
+        });
+        toast({ title: "Student added", description: `${form.firstName} ${form.lastName} is now in your pipeline.` });
+      }
       onCreated();
     } catch (err) {
-      toast({ title: "Failed to add student", description: (err as Error).message, variant: "destructive" });
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -201,7 +256,7 @@ function AddStudentModal({ onClose, onCreated }: { onClose: () => void; onCreate
         <div className="p-6 sm:p-7">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-xl font-extrabold text-[#1c1410]">Add new student</h2>
+              <h2 className="text-xl font-extrabold text-[#1c1410]">{student ? "Edit student" : "Add new student"}</h2>
               <p className="text-xs text-[#7a6a5d]">Capture profile, target destination, and academic info.</p>
             </div>
             <button onClick={onClose} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#fff8f1] text-[#7a6a5d] hover:bg-orange-100">
@@ -242,7 +297,7 @@ function AddStudentModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 disabled={saving}
                 className="flex-1 h-11 rounded-full bg-gradient-to-r from-[#e85d2f] to-[#f59e0b] text-white font-semibold shadow-lg shadow-orange-300/40 hover:-translate-y-0.5 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
               >
-                {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : "Add Student"}
+                {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : student ? "Save changes" : "Add Student"}
               </button>
             </div>
           </form>
