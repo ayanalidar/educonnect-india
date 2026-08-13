@@ -140,10 +140,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Unsupported docType. Supported: ${Object.keys(DOC_PROMPTS).join(", ")}` }, { status: 400 });
   }
 
-  // Cap base64 size (avoid huge payloads)
-  if (imageBase64.length > 5_000_000) {
-    return NextResponse.json({ error: "Image too large (max ~3.5 MB)" }, { status: 413 });
+  // Validate that imageBase64 is a valid data URI or base64 string
+  if (!/^data:image\/(png|jpeg|jpg|webp|gif|bmp);base64,/.test(imageBase64) && !/^[A-Za-z0-9+/=]+$/.test(imageBase64)) {
+    return NextResponse.json({ error: "Invalid image format. Must be a valid base64 image." }, { status: 400 });
   }
+
+  // Cap base64 size (4MB max — prevents DoS via large payloads)
+  if (imageBase64.length > 5_500_000) {
+    return NextResponse.json({ error: "Image too large (max ~4 MB)" }, { status: 413 });
+  }
+
+  // Sanitize fileName
+  const safeFileName = String(fileName).replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 255);
 
   let extracted: Record<string, string> = {};
   let summary = "";
@@ -195,7 +203,7 @@ export async function POST(req: Request) {
     data: {
       studentId: studentId || null,
       docType,
-      fileName,
+      fileName: safeFileName,
       extractedData: JSON.stringify(extracted),
       summary,
       confidence,

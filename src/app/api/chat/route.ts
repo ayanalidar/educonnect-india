@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { checkRateLimit, getClientIP } from "@/lib/auth";
 
 const SYSTEM_PROMPT = `You are EduBot, the friendly AI assistant for EduConnect India — a SaaS platform for Indian education consultants. You help prospective students and parents with questions about:
 
@@ -21,14 +22,29 @@ Never make up specific university deadlines, fees, or visa processing times — 
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIP(req);
+    if (!checkRateLimit(ip, 30, 60 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please slow down." },
+        { status: 429 }
+      );
+    }
+
     const { message, sessionId, visitorName, visitorEmail, source = "WEBSITE" } = await req.json();
     if (!message || !sessionId) {
       return NextResponse.json({ error: "message and sessionId required" }, { status: 400 });
     }
 
+    // Input validation + sanitization
+    const sanitizedMessage = String(message).trim().slice(0, 1000);
+    const sanitizedSessionId = String(sessionId).trim().slice(0, 100);
+    if (!sanitizedMessage || sanitizedMessage.length < 1) {
+      return NextResponse.json({ error: "Message cannot be empty" }, { status: 400 });
+    }
+
     // Find or create conversation
     let convo = await db.chatConversation.findUnique({
-      where: { sessionId },
+      where: { sessionId: sanitizedSessionId },
       include: { messages: { orderBy: { createdAt: "asc" }, take: 10 } },
     });
 
@@ -54,7 +70,7 @@ export async function POST(req: Request) {
 
     // Save user message
     await db.chatMessage.create({
-      data: { conversationId: convo.id, role: "USER", content: message },
+      data: { conversationId: convo.id, role: "USER", content: sanitizedMessage },
     });
 
     // Build LLM messages
@@ -64,7 +80,7 @@ export async function POST(req: Request) {
         role: m.role === "USER" ? "user" : "assistant",
         content: m.content,
       })),
-      { role: "user", content: message },
+      { role: "user", content: sanitizedMessage },
     ];
 
     let reply: string;
@@ -79,7 +95,7 @@ export async function POST(req: Request) {
     } catch (err) {
       console.error("[chat] LLM failed:", err);
       // Fallback rule-based responses
-      reply = generateFallbackReply(message);
+      reply = generateFallbackReply(sanitizedMessage);
     }
 
     // Save assistant message
