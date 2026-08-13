@@ -28,6 +28,7 @@ model User {
   applications   Application[]
   communications Communication[]
   invoices       Invoice[]
+  appointments   Appointment[]
 }
 
 // ============ Students ============
@@ -61,6 +62,7 @@ model Student {
   parentLinks     ParentStudent[]
   deadlines       Deadline[]
   interviewSessions VisaInterviewSession[]
+  appointments    Appointment[]
 }
 
 // ============ Parent Portal ============
@@ -198,6 +200,118 @@ model VisaInterviewSession {
   status        String   @default("IN_PROGRESS") // IN_PROGRESS | COMPLETED
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+// ============ Calendar & Booking ============
+
+model Appointment {
+  id           String   @id @default(cuid())
+  studentId    String?
+  student      Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  counselorId  String?
+  counselor    User?    @relation(fields: [counselorId], references: [id])
+  title        String
+  description  String?
+  startTime    DateTime
+  endTime      DateTime
+  status       String   @default("SCHEDULED") // SCHEDULED | COMPLETED | CANCELLED | NO_SHOW
+  type         String   @default("COUNSELING") // COUNSELING | VISA_INTERVIEW | FOLLOW_UP | DOCUMENT_REVIEW | PARENT_MEETING
+  location     String   @default("VIDEO") // IN_PERSON | VIDEO | PHONE
+  meetingLink  String?
+  branch       String?
+  createdAt    DateTime @default(now())
+}
+
+// ============ Referrals ============
+
+model Referral {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  referrerName    String
+  referrerEmail   String
+  referrerPhone   String?
+  referrerType    String   @default("ALUMNI") // ALUMNI | PARTNER | STUDENT | AFFILIATE
+  refereeName     String?
+  refereeEmail    String?
+  refereePhone    String?
+  status          String   @default("PENDING") // PENDING | CONTACTED | CONVERTED | PAID | LOST
+  commissionAmount Float?  @default(0) // INR
+  commissionStatus String  @default("NONE") // NONE | DUE | PAID
+  convertedStudentId String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  convertedAt     DateTime?
+}
+
+// ============ Country Guides ============
+
+model CountryGuide {
+  id                String   @id @default(cuid())
+  country           String   @unique
+  flag              String
+  capital           String
+  currency          String
+  language          String
+  visaType          String
+  visaProcessingTime String
+  visaFee           String
+  intakeMonths      String
+  avgTuition        String
+  avgLivingCost     String
+  workWhileStudying String
+  postStudyVisa     String
+  popularPrograms   String
+  topUniversities   String
+  description       String
+  heroColor         String   @default("#e85d2f")
+  createdAt         DateTime @default(now())
+}
+
+// ============ Branches ============
+
+model Branch {
+  id          String   @id @default(cuid())
+  name        String
+  city        String
+  address     String
+  phone       String?
+  email       String?
+  managerId   String?
+  managerName String?
+  createdAt   DateTime @default(now())
+}
+
+// ============ Lead Magnets ============
+
+model LeadMagnet {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // ELIGIBILITY_CHECKER | SCHOLARSHIP_QUIZ | UNIVERSITY_MATCHER | COUNTRY_QUIZ | VISA_ELIGIBILITY
+  slug        String   @unique
+  description String
+  ctaText     String   @default("Get my results")
+  isActive    Boolean  @default(true)
+  views       Int      @default(0)
+  conversions Int      @default(0)
+  embedCode   String?
+  createdAt   DateTime @default(now())
+}
+
+// ============ Audit Log (Compliance) ============
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  userEmail  String?
+  userName   String?
+  action     String   // LOGIN | LOGOUT | CREATE | UPDATE | DELETE | EXPORT | VIEW | ESCALATE
+  resource   String   // STUDENT | APPLICATION | VISA | INVOICE | DOCUMENT | USER | SETTINGS
+  resourceId String?
+  details    String
+  ipAddress  String?
+  userAgent  String?
+  severity   String   @default("INFO") // INFO | WARNING | CRITICAL
+  createdAt  DateTime @default(now())
 }
 
 // ============ Universities ============

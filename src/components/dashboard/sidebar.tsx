@@ -8,7 +8,8 @@ import {
   Plane, MessagesSquare, Wallet, BarChart3,
   Plug, Settings, GraduationCap, LogOut, Globe,
   ChevronLeft, Shield, Sparkles, FileSearch, Beaker,
-  Award, Bell, Mic, Smartphone,
+  Award, Bell, Mic, Smartphone, Calendar, Gift, Globe2,
+  Building2, Zap,
 } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { useI18n } from "@/context/i18n";
@@ -29,6 +30,12 @@ export type DashboardView =
   | "deadlines"
   | "visa-interview"
   | "mobile"
+  | "calendar"
+  | "referrals"
+  | "country-guides"
+  | "branches"
+  | "lead-magnets"
+  | "audit-logs"
   | "innovation"
   | "settings";
 
@@ -51,7 +58,16 @@ const NAV_SECTIONS: { title: string; items: { key: DashboardView; icon: React.El
       { key: "universities", icon: School, tKey: "nav.universities" },
       { key: "visa", icon: Plane, tKey: "nav.visa" },
       { key: "communication", icon: MessagesSquare, tKey: "nav.communication" },
+      { key: "calendar", icon: Calendar, tKey: "nav.calendar", badge: "NEW" },
       { key: "deadlines", icon: Bell, tKey: "nav.deadlines", badge: "NEW" },
+    ],
+  },
+  {
+    title: "Growth",
+    items: [
+      { key: "referrals", icon: Gift, tKey: "nav.referrals", badge: "NEW" },
+      { key: "lead-magnets", icon: Zap, tKey: "nav.lead-magnets", badge: "NEW" },
+      { key: "country-guides", icon: Globe2, tKey: "nav.country-guides", badge: "NEW" },
     ],
   },
   {
@@ -59,6 +75,8 @@ const NAV_SECTIONS: { title: string; items: { key: DashboardView; icon: React.El
     items: [
       { key: "finance", icon: Wallet, tKey: "nav.finance" },
       { key: "analytics", icon: BarChart3, tKey: "nav.analytics" },
+      { key: "branches", icon: Building2, tKey: "nav.branches", badge: "NEW" },
+      { key: "audit-logs", icon: Shield, tKey: "nav.audit-logs", badge: "NEW" },
       { key: "integrations", icon: Plug, tKey: "nav.integrations" },
       { key: "mobile", icon: Smartphone, tKey: "nav.mobile", badge: "NEW" },
       { key: "innovation", icon: Beaker, tKey: "nav.innovation", badge: "NEW" },

@@ -416,7 +416,167 @@ async function main() {
   }
   console.log(`✅ Deadlines: ${sampleDeadlines.length}`);
 
-  // 10. Demo parent account (linked to Aarav Sharma)
+  // 11. Appointments (next 7 days)
+  const apptStudents = await prisma.student.findMany({ take: 6 });
+  const apptTypes = [
+    { t: "COUNSELING", title: "Initial counseling — UK options", loc: "VIDEO", dur: 60 },
+    { t: "VISA_INTERVIEW", title: "Visa interview prep — US F1", loc: "VIDEO", dur: 90 },
+    { t: "DOCUMENT_REVIEW", title: "SOP review session", loc: "IN_PERSON", dur: 45 },
+    { t: "FOLLOW_UP", title: "Application status follow-up", loc: "PHONE", dur: 30 },
+    { t: "PARENT_MEETING", title: "Parent meeting — Aarav's progress", loc: "VIDEO", dur: 60 },
+    { t: "COUNSELING", title: "Course selection — Canada PG programs", loc: "VIDEO", dur: 60 },
+  ];
+  for (let i = 0; i < apptTypes.length; i++) {
+    const a = apptTypes[i];
+    const start = new Date(now + (i + 1) * day + 10 * 3600000); // 10am each day
+    await prisma.appointment.create({
+      data: {
+        studentId: apptStudents[i % apptStudents.length].id,
+        counselorId: counselor.id,
+        title: a.title,
+        description: `Auto-scheduled ${a.t.toLowerCase().replace(/_/g, " ")} session.`,
+        startTime: start,
+        endTime: new Date(start.getTime() + a.dur * 60000),
+        status: i > 3 ? "SCHEDULED" : "COMPLETED",
+        type: a.t,
+        location: a.loc,
+        meetingLink: a.loc === "VIDEO" ? "https://meet.educonnect.in/" + Math.random().toString(36).slice(2, 8) : null,
+        branch: "Mumbai Central",
+      },
+    });
+  }
+  console.log(`✅ Appointments: ${apptTypes.length}`);
+
+  // 12. Referrals (with codes + conversions)
+  const referrals = [
+    { code: "ALUMNI-IITB-2024", name: "Vikram Iyer", email: "vikram.iyer@alumni.iitb.ac.in", phone: "+91 99876 54321", type: "ALUMNI", status: "CONVERTED", commission: 15000, convStatus: "PAID" },
+    { code: "PARTNER-MONASH-2024", name: "Dr. Sarah Chen", email: "s.chen@monash.edu", type: "PARTNER", status: "CONVERTED", commission: 25000, convStatus: "DUE" },
+    { code: "ALUMNI-OXFORD-2024", name: "Ananya Krishnan", email: "ananya.k@alumni.ox.ac.uk", phone: "+91 98765 11111", type: "ALUMNI", status: "CONTACTED", commission: 0, convStatus: "NONE" },
+    { code: "STUDENT-REF-AARAV-2024", name: "Aarav Sharma", email: "aarav.sharma@gmail.com", phone: "+91 91367 99462", type: "STUDENT", status: "PENDING", commission: 0, convStatus: "NONE" },
+    { code: "AFFILIATE-STUDYABROAD-2024", name: "Rohit Khanna", email: "rohit@studyabroadindia.com", phone: "+91 98111 22222", type: "AFFILIATE", status: "CONVERTED", commission: 35000, convStatus: "PAID" },
+    { code: "ALUMNI-TORONTO-2024", name: "Diya Patel's Senior", email: "senior@utoronto.ca", type: "ALUMNI", status: "LOST", commission: 0, convStatus: "NONE" },
+    { code: "PARTNER-MANIPAL-2024", name: "Manipal Alumni Office", email: "alumni@manipal.edu", type: "PARTNER", status: "PENDING", commission: 0, convStatus: "NONE" },
+  ];
+  for (const r of referrals) {
+    await prisma.referral.create({
+      data: {
+        code: r.code,
+        referrerName: r.name,
+        referrerEmail: r.email,
+        referrerPhone: r.phone || null,
+        referrerType: r.type,
+        refereeName: r.status === "CONVERTED" ? "Walk-in lead" : null,
+        refereeEmail: null,
+        status: r.status,
+        commissionAmount: r.commission,
+        commissionStatus: r.convStatus,
+        convertedAt: r.status === "CONVERTED" ? new Date(now - 30 * day) : null,
+        notes: r.status === "CONVERTED" ? "Successfully placed at partner university." : "Awaiting first contact.",
+      },
+    });
+  }
+  console.log(`✅ Referrals: ${referrals.length}`);
+
+  // 13. Country Guides (12 destinations)
+  const guides = [
+    { c: "United Kingdom", flag: "🇬🇧", cap: "London", cur: "GBP (£)", lang: "English", visa: "Tier 4 (Student)", pt: "3-4 weeks", fee: "£348 + £470 IHS", intakes: "Sep, Jan", tuition: "£15,000-40,000/yr", living: "£1,000-1,500/month", work: "20 hrs/week during term, full-time in breaks", psv: "2-year Graduate Route visa", programs: "MBA, M.Sc CS, LLM, M.Eng", unis: "Oxford, Cambridge, UCL, Imperial, Edinburgh, Manchester", color: "#0f766e", desc: "World-class education with the 2-year Graduate Route work visa. Shorter 1-year Master's programs save time and money." },
+    { c: "United States", flag: "🇺🇸", cap: "Washington D.C.", cur: "USD ($)", lang: "English", visa: "F-1 (Student)", pt: "3-5 weeks (varies)", fee: "$510 SEVIS + $185 DS-160", intakes: "Aug/Sep, Jan", tuition: "$25,000-60,000/yr", living: "$1,000-2,000/month", work: "20 hrs/week on-campus, CPT/OPT for off-campus", psv: "1-year OPT (3-year STEM)", programs: "MS CS, MBA, MS Data Science, M.Eng", unis: "MIT, Stanford, Harvard, CMU, Purdue, ASU, NEU", color: "#e85d2f", desc: "Largest higher education system with 4,000+ universities. STEM OPT allows 3 years of work experience after graduation." },
+    { c: "Canada", flag: "🇨🇦", cap: "Ottawa", cur: "CAD ($)", lang: "English/French", visa: "Study Permit", pt: "4-8 weeks (SDS: 20 days)", fee: "CAD 150 + biometrics", intakes: "Sep, Jan, May", tuition: "CAD 20,000-50,000/yr", living: "CAD 1,000-1,500/month", work: "20 hrs/week during term, 40 hrs/week in breaks", psv: "3-year PGWP", programs: "M.Sc, MBA, M.Eng, MBAN", unis: "Toronto, UBC, McGill, Waterloo, Western, York", color: "#f59e0b", desc: "Most immigration-friendly country. 3-year Post-Graduate Work Permit + easy PR pathway via Express Entry." },
+    { c: "Australia", flag: "🇦🇺", cap: "Canberra", cur: "AUD ($)", lang: "English", visa: "Subclass 500", pt: "4-6 weeks", fee: "AUD 650 + biometrics", intakes: "Feb, Jul", tuition: "AUD 25,000-50,000/yr", living: "AUD 1,500-2,000/month", work: "48 hrs per fortnight", psv: "2-4 year Temporary Graduate Visa (485)", programs: "MBA, M.IT, M.Sc, M.Eng", unis: "Melbourne, Monash, UNSW, Sydney, Queensland, Adelaide", color: "#a855f7", desc: "Beautiful climate + strong post-study work rights. 485 visa allows 2-4 years of work depending on qualification." },
+    { c: "Ireland", flag: "🇮🇪", cap: "Dublin", cur: "EUR (€)", lang: "English", visa: "Long Stay D (Student)", pt: "4-8 weeks", fee: "€60-100", intakes: "Sep", tuition: "€10,000-25,000/yr", living: "€1,000-1,500/month", work: "20 hrs/week during term, 40 hrs/week in breaks", psv: "2-year Third Level Graduate Scheme", programs: "M.Sc CS, MBA, M.Sc Data Science", unis: "TCD, UCD, DCU, Galway, UCC", color: "#0ea5e9", desc: "English-speaking EU country with easy PR. Tech hub — Google, Facebook, Apple EMEA HQs in Dublin." },
+    { c: "Germany", flag: "🇩🇪", cap: "Berlin", cur: "EUR (€)", lang: "German/English", visa: "Student Visa", pt: "6-12 weeks", fee: "€75", intakes: "Oct, Apr", tuition: "€0-1,500/yr (public)", living: "€800-1,200/month", work: "120 full days or 240 half days/year", psv: "18-month residence permit to find work", programs: "M.Sc, M.Eng, MBA (English-taught)", unis: "TUM, RWTH Aachen, Heidelberg, Humboldt", color: "#22c55e", desc: "Free or low-cost education at public universities. Strong engineering programs. 18-month job seeker visa after graduation." },
+    { c: "Singapore", flag: "🇸🇬", cap: "Singapore", cur: "SGD ($)", lang: "English", visa: "Student Pass", pt: "2-4 weeks", fee: "SGD 90", intakes: "Aug, Jan", tuition: "SGD 25,000-50,000/yr", living: "SGD 1,500-2,500/month", work: "16 hrs/week during term", psv: "1-year LTVP for job search", programs: "M.Sc CS, MBA, MPA, M.Eng", unis: "NUS, NTU, SMU, SUTD", color: "#ec4899", desc: "Asia's education hub. Top-ranked NUS and NTU. Gateway to Asian job market with low taxes." },
+    { c: "New Zealand", flag: "🇳🇿", cap: "Wellington", cur: "NZD ($)", lang: "English", visa: "Student Visa", pt: "4-6 weeks", fee: "NZD 295", intakes: "Feb, Jul", tuition: "NZD 22,000-40,000/yr", living: "NZD 1,500-2,000/month", work: "20 hrs/week during term, full-time in breaks", psv: "1-3 year Post-Study Work Visa", programs: "MBA, M.Sc, M.Eng, MPH", unis: "Auckland, Otago, Victoria, Massey", color: "#14b8a6", desc: "Beautiful landscapes + safe environment. Post-Study Work Visa up to 3 years depending on qualification level." },
+    { c: "Netherlands", flag: "🇳🇱", cap: "Amsterdam", cur: "EUR (€)", lang: "Dutch/English", visa: "Entry Visa (MVV)", pt: "2-4 weeks", fee: "€192", intakes: "Sep", tuition: "€8,000-20,000/yr", living: "€1,000-1,500/month", work: "16 hrs/week during term", psv: "1-year Orientation Year (zoekjaar)", programs: "M.Sc, MBA, M.Eng (English-taught)", unis: "TU Delft, Amsterdam, Utrecht, Erasmus", color: "#fbbf24", desc: "Highest English proficiency in non-English EU. 2,100+ English-taught programs. Orientation Year visa for graduates." },
+    { c: "France", flag: "🇫🇷", cap: "Paris", cur: "EUR (€)", lang: "French/English", visa: "Long Stay Student Visa", pt: "2-3 weeks", fee: "€99", intakes: "Sep", tuition: "€3,000-15,000/yr (public)", living: "€1,000-1,500/month", work: "964 hrs/year", psv: "2-year APS residence permit", programs: "MBA, M.Sc, MA, M.Eng", unis: "HEC Paris, Sorbonne, Sciences Po, INSEAD", color: "#6366f1", desc: "Affordable public education + world-class business schools. APS permit allows 2 years to find work." },
+    { c: "United Arab Emirates", flag: "🇦🇪", cap: "Abu Dhabi", cur: "AED (د.إ)", lang: "Arabic/English", visa: "Student Visa", pt: "2-4 weeks", fee: "AED 1,000-2,500", intakes: "Sep", tuition: "AED 50,000-150,000/yr", living: "AED 4,000-8,000/month", work: "Part-time with permit", psv: "6-month job seeker visa", programs: "MBA, B.Sc, M.Sc, M.Eng", unis: "NYU Abu Dhabi, Khalifa, AUS, MBZUAI", color: "#dc2626", desc: "Tax-free income + luxury campus life. Branch campuses of NYU, Sorbonne, Heriot-Watt. Growing tech hub." },
+    { c: "Italy", flag: "🇮🇹", cap: "Rome", cur: "EUR (€)", lang: "Italian/English", visa: "Type D Student Visa", pt: "3-6 weeks", fee: "€50", intakes: "Sep", tuition: "€1,000-20,000/yr", living: "€800-1,200/month", work: "20 hrs/week during term", psv: "1-year residence permit for job search", programs: "MBA, M.Sc, M.Arch, M.Design", unis: "Bocconi, Politecnico di Milano, Sapienza, Padova", color: "#16a34a", desc: "Affordable education + rich cultural heritage. Bocconi and Politecnico di Milano rank among Europe's best." },
+  ];
+  for (const g of guides) {
+    await prisma.countryGuide.create({
+      data: {
+        country: g.c, flag: g.flag, capital: g.cap, currency: g.cur, language: g.lang,
+        visaType: g.visa, visaProcessingTime: g.pt, visaFee: g.fee, intakeMonths: g.intakes,
+        avgTuition: g.tuition, avgLivingCost: g.living, workWhileStudying: g.work,
+        postStudyVisa: g.psv, popularPrograms: g.programs, topUniversities: g.unis,
+        description: g.desc, heroColor: g.color,
+      },
+    });
+  }
+  console.log(`✅ Country guides: ${guides.length}`);
+
+  // 14. Branches
+  const branches = [
+    { name: "Mumbai Central", city: "Mumbai", address: "5th Floor, Trade Centre, BKC, Mumbai 400051", phone: "+91 22 6824 1900", email: "mumbai@educonnect.in", manager: "Rajesh Mehta" },
+    { name: "Delhi NCR", city: "Gurugram", address: "Tower B, Cyberhub, Sector 24, Gurugram 122002", phone: "+91 124 468 2200", email: "delhi@educonnect.in", manager: "Anjali Nair" },
+    { name: "Bengaluru", city: "Bengaluru", address: "Prestige Atlanta, 80 Feet Road, Koramangala, Bengaluru 560095", phone: "+91 80 4665 8800", email: "bengaluru@educonnect.in", manager: "Sandeep Joshi" },
+    { name: "Chennai", city: "Chennai", address: "Tidel Park, Taramani, Chennai 600113", phone: "+91 44 2254 0000", email: "chennai@educonnect.in", manager: "Priya Reddy" },
+    { name: "Hyderabad", city: "Hyderabad", address: "Cyber Towers, HITEC City, Hyderabad 500081", phone: "+91 40 2335 0000", email: "hyderabad@educonnect.in", manager: "Krishna Murthy" },
+    { name: "Pune", city: "Pune", address: "World Trade Center, Kharadi, Pune 411014", phone: "+91 20 6725 0000", email: "pune@educonnect.in", manager: "Meera Krishnan" },
+  ];
+  for (const b of branches) {
+    await prisma.branch.create({
+      data: {
+        name: b.name, city: b.city, address: b.address, phone: b.phone, email: b.email, managerName: b.manager,
+      },
+    });
+  }
+  console.log(`✅ Branches: ${branches.length}`);
+
+  // 15. Lead Magnets
+  const magnets = [
+    { n: "UK Eligibility Checker", t: "ELIGIBILITY_CHECKER", s: "uk-eligibility", d: "60-second quiz — finds UK programs matching the visitor's profile.", cta: "Check my UK eligibility", v: 1247, conv: 312 },
+    { n: "Scholarship Match Quiz", t: "SCHOLARSHIP_QUIZ", s: "scholarship-quiz", d: "Matches visitors with eligible scholarships from our 39+ database.", cta: "Find my scholarships", v: 2156, conv: 548 },
+    { n: "AI University Matcher", t: "UNIVERSITY_MATCHER", s: "ai-matcher", d: "Free 5-question quiz → instant university recommendations.", cta: "Match me to universities", v: 3421, conv: 892 },
+    { n: "Canada Visa Eligibility", t: "VISA_ELIGIBILITY", s: "canada-visa", d: "Checks Canada SDS eligibility based on IELTS, GIC, and program.", cta: "Check Canada visa fit", v: 892, conv: 234 },
+    { n: "Country Fit Quiz", t: "COUNTRY_QUIZ", s: "country-fit", d: "8-question personality + budget quiz → best destination country.", cta: "Find my country", v: 1876, conv: 445 },
+    { n: "SOP Strength Checker", t: "ELIGIBILITY_CHECKER", s: "sop-checker", d: "Paste your SOP → AI scores it on 5 dimensions + feedback.", cta: "Score my SOP", v: 678, conv: 198 },
+  ];
+  for (const m of magnets) {
+    await prisma.leadMagnet.create({
+      data: {
+        name: m.n, type: m.t, slug: m.s, description: m.d, ctaText: m.cta,
+        isActive: true, views: m.v, conversions: m.conv,
+        embedCode: `<iframe src="https://educonnect.in/lm/${m.s}" width="100%" height="600" frameborder="0"></iframe>`,
+      },
+    });
+  }
+  console.log(`✅ Lead magnets: ${magnets.length}`);
+
+  // 16. Audit logs (sample compliance trail)
+  const auditLogs = [
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "LOGIN", res: "USER", det: "Counselor logged in from Mumbai", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "CREATE", res: "STUDENT", det: "Created student record: Aarav Sharma", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "UPDATE", res: "APPLICATION", det: "Application status changed: DRAFT → SUBMITTED (Oxford)", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "VIEW", res: "DOCUMENT", det: "Viewed passport scan for student cmsrvus...", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "EXPORT", res: "INVOICE", det: "Exported GST report Q1 2026 (12 invoices)", sev: "WARNING" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "ESCALATE", res: "DEADLINE", det: "Manually escalated deadline: Manchester application (1 day left)", sev: "CRITICAL" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "CREATE", res: "INVOICE", det: "Created invoice INV-2026-1001 for ₹1,24,500 (Manchester commission)", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "DELETE", res: "DOCUMENT", det: "Deleted duplicate passport scan (cmsrw80ll...)", sev: "WARNING" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "UPDATE", res: "SETTINGS", det: "Changed language preference: English → Hindi", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "VIEW", res: "STUDENT", det: "Viewed 47 student records (exported to PDF)", sev: "WARNING" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "LOGIN", res: "USER", det: "Counselor logged in (session resumed)", sev: "INFO" },
+    { ue: "demo@educonnect.in", un: "Rajesh Mehta", act: "CREATE", res: "VISA", det: "Created visa application for Aarav Sharma (UK Tier 4)", sev: "INFO" },
+  ];
+  for (let i = 0; i < auditLogs.length; i++) {
+    const a = auditLogs[i];
+    await prisma.auditLog.create({
+      data: {
+        userId: counselor.id,
+        userEmail: a.ue,
+        userName: a.un,
+        action: a.act,
+        resource: a.res,
+        details: a.det,
+        ipAddress: "103.21.58." + (10 + i),
+        userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        severity: a.sev,
+      },
+    });
+  }
+  console.log(`✅ Audit logs: ${auditLogs.length}`);
+
+  // 17. Demo parent account (linked to Aarav Sharma)
   const aarav = await prisma.student.findFirst({ where: { firstName: "Aarav", lastName: "Sharma" } });
   if (aarav) {
     const parent = await prisma.parent.upsert({

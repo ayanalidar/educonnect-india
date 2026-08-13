@@ -51,6 +51,12 @@ export default function Topbar({
     deadlines: "deadlines.subtitle",
     "visa-interview": "visa-interview.subtitle",
     mobile: "mobile.subtitle",
+    calendar: "calendar.subtitle",
+    referrals: "referrals.subtitle",
+    "country-guides": "country-guides.subtitle",
+    branches: "branches.subtitle",
+    "lead-magnets": "lead-magnets.subtitle",
+    "audit-logs": "audit-logs.subtitle",
     innovation: "innovation.subtitle",
     settings: "settings.subtitle",
   };

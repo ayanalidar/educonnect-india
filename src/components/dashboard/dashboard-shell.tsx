@@ -21,6 +21,12 @@ import ScholarshipsView from "@/components/dashboard/views/scholarships";
 import DeadlinesView from "@/components/dashboard/views/deadlines";
 import VisaInterviewerView from "@/components/dashboard/views/visa-interviewer";
 import MobileAppView from "@/components/dashboard/views/mobile-app";
+import CalendarView from "@/components/dashboard/views/calendar";
+import ReferralsView from "@/components/dashboard/views/referrals";
+import CountryGuidesView from "@/components/dashboard/views/country-guides";
+import BranchesView from "@/components/dashboard/views/branches";
+import LeadMagnetsView from "@/components/dashboard/views/lead-magnets";
+import AuditLogsView from "@/components/dashboard/views/audit-logs";
 import InnovationLabView from "@/components/dashboard/views/innovation-lab";
 import SettingsView from "@/components/dashboard/views/settings";
 import { useAppStore } from "@/store/app-store";
@@ -61,6 +67,12 @@ export default function DashboardShell() {
           {view === "deadlines" && <DeadlinesView />}
           {view === "visa-interview" && <VisaInterviewerView />}
           {view === "mobile" && <MobileAppView />}
+          {view === "calendar" && <CalendarView />}
+          {view === "referrals" && <ReferralsView />}
+          {view === "country-guides" && <CountryGuidesView />}
+          {view === "branches" && <BranchesView />}
+          {view === "lead-magnets" && <LeadMagnetsView />}
+          {view === "audit-logs" && <AuditLogsView />}
           {view === "innovation" && <InnovationLabView />}
           {view === "settings" && <SettingsView />}
         </main>
