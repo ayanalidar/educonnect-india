@@ -7,15 +7,17 @@ import { useState, useEffect } from "react";
 import Sidebar, { type DashboardView } from "@/components/dashboard/sidebar";
 import Topbar from "@/components/dashboard/topbar";
 import OverviewView from "@/components/dashboard/views/overview";
+import MatcherView from "@/components/dashboard/views/matcher";
 import StudentsView from "@/components/dashboard/views/students";
 import ApplicationsView from "@/components/dashboard/views/applications";
 import UniversitiesView from "@/components/dashboard/views/universities";
 import VisaView from "@/components/dashboard/views/visa";
 import CommunicationView from "@/components/dashboard/views/communication";
+import DocumentsView from "@/components/dashboard/views/documents";
 import FinanceView from "@/components/dashboard/views/finance";
 import AnalyticsView from "@/components/dashboard/views/analytics";
 import IntegrationsView from "@/components/dashboard/views/integrations";
-import RoadmapView from "@/components/dashboard/views/roadmap";
+import InnovationLabView from "@/components/dashboard/views/innovation-lab";
 import SettingsView from "@/components/dashboard/views/settings";
 import { useAppStore } from "@/store/app-store";
 
@@ -24,7 +26,6 @@ export default function DashboardShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user } = useAppStore();
 
-  // If user is null somehow (e.g., logout mid-session), parent will switch back to landing
   useEffect(() => {
     if (!user) return;
   }, [user]);
@@ -42,15 +43,17 @@ export default function DashboardShell() {
         <Topbar view={view} onOpenSidebar={() => setMobileOpen(true)} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
           {view === "overview" && <OverviewView onNavigate={setView} />}
+          {view === "matcher" && <MatcherView />}
           {view === "students" && <StudentsView />}
           {view === "applications" && <ApplicationsView />}
           {view === "universities" && <UniversitiesView />}
           {view === "visa" && <VisaView />}
           {view === "communication" && <CommunicationView />}
+          {view === "documents" && <DocumentsView />}
           {view === "finance" && <FinanceView />}
           {view === "analytics" && <AnalyticsView />}
           {view === "integrations" && <IntegrationsView />}
-          {view === "roadmap" && <RoadmapView />}
+          {view === "innovation" && <InnovationLabView />}
           {view === "settings" && <SettingsView />}
         </main>
       </div>

@@ -15,6 +15,7 @@ import Contact from "@/components/site/contact";
 import Footer from "@/components/site/footer";
 import AuthModal from "@/components/site/auth-modal";
 import DashboardShell from "@/components/dashboard/dashboard-shell";
+import ParentPortal from "@/components/site/parent-portal";
 
 export default function Home() {
   useScrollReveal();
@@ -28,15 +29,19 @@ export default function Home() {
 }
 
 function AppShell() {
-  const { view, user } = useAppStore();
+  const { view, user, parent } = useAppStore();
 
-  // If user is authenticated, default to dashboard
-  const showDashboard = view === "dashboard" && user;
+  // Parent portal takes priority if parent is logged in
+  if (view === "parent" && parent) {
+    return <ParentPortal />;
+  }
 
-  if (showDashboard) {
+  // Counselor dashboard
+  if (view === "dashboard" && user) {
     return <DashboardShell />;
   }
 
+  // Default: landing page
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
@@ -54,3 +59,4 @@ function AppShell() {
     </div>
   );
 }
+

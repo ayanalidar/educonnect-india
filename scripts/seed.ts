@@ -299,8 +299,40 @@ async function main() {
   }
   console.log(`✅ Communications: ${allStudents.length}`);
 
+  // 7. Demo parent account (linked to Aarav Sharma)
+  const aarav = await prisma.student.findFirst({ where: { firstName: "Aarav", lastName: "Sharma" } });
+  if (aarav) {
+    const parent = await prisma.parent.upsert({
+      where: { email: "parent@educonnect.in" },
+      update: {},
+      create: {
+        email: "parent@educonnect.in",
+        name: "Mr. Mukesh Sharma",
+        passwordHash: hashPassword("parent1234"),
+        phone: "+91 98200 11223",
+        avatarColor: "#0f766e",
+      },
+    });
+    await prisma.parentStudent.upsert({
+      where: { parentId_studentId: { parentId: parent.id, studentId: aarav.id } },
+      update: {},
+      create: { parentId: parent.id, studentId: aarav.id, relation: "PARENT" },
+    });
+    // Welcome message from counselor
+    await prisma.parentMessage.create({
+      data: {
+        parentId: parent.id,
+        studentId: aarav.id,
+        fromRole: "COUNSELOR",
+        body: "Welcome, Mr. Sharma! Aarav's UK applications are progressing well. He has 1 offer from University of Manchester and 2 more applications under review.",
+      },
+    });
+    console.log(`✅ Parent account: parent@educonnect.in / parent1234 (linked to Aarav)`);
+  }
+
   console.log("🎉 Seeding complete!");
-  console.log("   Login: demo@educonnect.in / demo1234");
+  console.log("   Counselor login: demo@educonnect.in / demo1234");
+  console.log("   Parent login:    parent@educonnect.in / parent1234");
 }
 
 main()

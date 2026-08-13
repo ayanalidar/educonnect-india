@@ -57,6 +57,64 @@ model Student {
   applications    Application[]
   visas           VisaApplication[]
   communications  Communication[]
+  documents       DocumentRecord[]
+  parentLinks     ParentStudent[]
+}
+
+// ============ Parent Portal ============
+
+model Parent {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  phone        String?
+  avatarColor  String   @default("#0f766e")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  students     ParentStudent[]
+  messages     ParentMessage[]
+}
+
+model ParentStudent {
+  id        String   @id @default(cuid())
+  parentId  String
+  parent    Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  relation  String   @default("PARENT") // PARENT | GUARDIAN
+  createdAt DateTime @default(now())
+
+  @@unique([parentId, studentId])
+}
+
+model ParentMessage {
+  id         String   @id @default(cuid())
+  parentId   String
+  parent     Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  studentId  String?
+  fromRole   String   // PARENT | COUNSELOR
+  body       String
+  readAt     DateTime?
+  createdAt  DateTime @default(now())
+}
+
+// ============ Document OCR ============
+
+model DocumentRecord {
+  id            String   @id @default(cuid())
+  studentId     String?
+  student       Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  docType       String   // PASSPORT | TRANSCRIPT | IELTS_CERT | TOEFL_CERT | SOP | LOR | BANK_STATEMENT | RESUME
+  fileName      String
+  fileSize      Int?
+  mimeType      String?
+  extractedData String   // JSON string of extracted fields
+  summary       String?
+  confidence    Float?   @default(0)
+  status        String   @default("EXTRACTED") // PENDING | EXTRACTED | VERIFIED | REJECTED
+  createdAt     DateTime @default(now())
 }
 
 // ============ Universities ============

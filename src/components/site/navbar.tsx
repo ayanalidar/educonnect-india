@@ -76,6 +76,12 @@ export default function Navbar() {
             ) : (
               <>
                 <button
+                  onClick={() => openAuthModal("parent")}
+                  className="text-xs font-semibold text-[#0f766e] hover:text-[#0b5750] transition-colors"
+                >
+                  Parent Portal
+                </button>
+                <button
                   onClick={() => openAuthModal("signin")}
                   className="text-sm font-semibold text-[#1c1410] hover:text-[#e85d2f] transition-colors"
                 >

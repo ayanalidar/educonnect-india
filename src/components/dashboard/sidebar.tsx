@@ -4,50 +4,42 @@
 "use client";
 
 import {
-  LayoutDashboard,
-  Users,
-  FolderCheck,
-  School,
-  Plane,
-  MessagesSquare,
-  Wallet,
-  BarChart3,
-  Plug,
-  Map,
-  Settings,
-  GraduationCap,
-  LogOut,
-  Globe,
-  ChevronLeft,
-  Shield,
+  LayoutDashboard, Users, FolderCheck, School,
+  Plane, MessagesSquare, Wallet, BarChart3,
+  Plug, Settings, GraduationCap, LogOut, Globe,
+  ChevronLeft, Shield, Sparkles, FileSearch, Beaker,
 } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { useI18n } from "@/context/i18n";
 
 export type DashboardView =
   | "overview"
+  | "matcher"
   | "students"
   | "applications"
   | "universities"
   | "visa"
   | "communication"
+  | "documents"
   | "finance"
   | "analytics"
   | "integrations"
-  | "roadmap"
+  | "innovation"
   | "settings";
 
-const NAV: { key: DashboardView; icon: React.ElementType; tKey: string }[] = [
+const NAV: { key: DashboardView; icon: React.ElementType; tKey: string; badge?: string }[] = [
   { key: "overview", icon: LayoutDashboard, tKey: "nav.overview" },
+  { key: "matcher", icon: Sparkles, tKey: "nav.matcher", badge: "AI" },
   { key: "students", icon: Users, tKey: "nav.students" },
   { key: "applications", icon: FolderCheck, tKey: "nav.applications" },
   { key: "universities", icon: School, tKey: "nav.universities" },
   { key: "visa", icon: Plane, tKey: "nav.visa" },
   { key: "communication", icon: MessagesSquare, tKey: "nav.communication" },
+  { key: "documents", icon: FileSearch, tKey: "nav.documents", badge: "OCR" },
   { key: "finance", icon: Wallet, tKey: "nav.finance" },
   { key: "analytics", icon: BarChart3, tKey: "nav.analytics" },
   { key: "integrations", icon: Plug, tKey: "nav.integrations" },
-  { key: "roadmap", icon: Map, tKey: "nav.roadmap" },
+  { key: "innovation", icon: Beaker, tKey: "nav.innovation", badge: "NEW" },
   { key: "settings", icon: Settings, tKey: "nav.settings" },
 ];
 
@@ -134,7 +126,16 @@ export default function Sidebar({
                   <n.icon className="h-4 w-4" />
                 </span>
                 {t(n.tKey)}
-                {isActive && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#f59e0b]" />}
+                {n.badge && (
+                  <span
+                    className={`ml-auto text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full ${
+                      isActive ? "bg-[#f59e0b] text-white" : "bg-[#e85d2f]/20 text-[#f59e0b]"
+                    }`}
+                  >
+                    {n.badge}
+                  </span>
+                )}
+                {isActive && !n.badge && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#f59e0b]" />}
               </button>
             );
           })}

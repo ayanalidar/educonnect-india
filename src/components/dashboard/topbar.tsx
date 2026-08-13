@@ -37,15 +37,17 @@ export default function Topbar({
   const titleKey = `nav.${view}`;
   const subtitleMap: Record<DashboardView, string> = {
     overview: "overview.subtitle",
+    matcher: "matcher.subtitle",
     students: "students.subtitle",
     applications: "applications.subtitle",
     universities: "universities.subtitle",
     visa: "visa.subtitle",
     communication: "communication.subtitle",
+    documents: "documents.subtitle",
     finance: "finance.subtitle",
     analytics: "analytics.subtitle",
     integrations: "integrations.subtitle",
-    roadmap: "roadmap.subtitle",
+    innovation: "innovation.subtitle",
     settings: "settings.subtitle",
   };
 
