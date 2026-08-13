@@ -59,6 +59,8 @@ model Student {
   communications  Communication[]
   documents       DocumentRecord[]
   parentLinks     ParentStudent[]
+  deadlines       Deadline[]
+  interviewSessions VisaInterviewSession[]
 }
 
 // ============ Parent Portal ============
@@ -115,6 +117,87 @@ model DocumentRecord {
   confidence    Float?   @default(0)
   status        String   @default("EXTRACTED") // PENDING | EXTRACTED | VERIFIED | REJECTED
   createdAt     DateTime @default(now())
+}
+
+// ============ Scholarships ============
+
+model Scholarship {
+  id              String   @id @default(cuid())
+  name            String
+  provider        String   // e.g. "British Council", "Govt of India", "University of Oxford"
+  country         String   // destination country
+  amount          Int      // INR per year (in rupees)
+  amountLabel     String   // display label e.g. "£10,000", "Full tuition"
+  level           String   // UG | PG | PHD | ANY
+  categories      String   // comma-separated: MERIT,NEED,MINORITY,SPORTS,RESEARCH
+  minScore        Float?   // min academic score (10-scale)
+  minIelts        Float?
+  minToefl        Int?
+  deadline        String?  // e.g. "2026-03-15" or "Rolling"
+  intake          String?  // e.g. "Fall 2026"
+  fields          String   // comma-separated eligible fields, "ANY" for all
+  website         String?
+  logoColor       String   @default("#0f766e")
+  description     String
+  createdAt       DateTime @default(now())
+}
+
+// ============ Deadlines ============
+
+model Deadline {
+  id            String   @id @default(cuid())
+  studentId     String?
+  student       Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  applicationId String?  // link to application if relevant
+  title         String
+  description   String?
+  dueDate       DateTime
+  priority      String   @default("MEDIUM") // LOW | MEDIUM | HIGH | CRITICAL
+  category      String   // APPLICATION | VISA | DOCUMENT | PAYMENT | INTERVIEW | SCHOLARSHIP
+  country       String?  // for visa/interview deadlines
+  status        String   @default("PENDING") // PENDING | DONE | OVERDUE
+  escalatedTo   String?  // who's been notified
+  createdAt     DateTime @default(now())
+}
+
+// ============ Conversational AI Chatbot ============
+
+model ChatConversation {
+  id          String   @id @default(cuid())
+  sessionId   String   @unique // anonymous browser session
+  visitorName String?
+  visitorEmail String?
+  visitorPhone String?
+  source      String   @default("WEBSITE") // WEBSITE | DASHBOARD | WHATSAPP
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages    ChatMessage[]
+}
+
+model ChatMessage {
+  id              String   @id @default(cuid())
+  conversationId  String
+  conversation    ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role            String   // USER | ASSISTANT
+  content         String
+  createdAt       DateTime @default(now())
+}
+
+// ============ Visa Interview Practice ============
+
+model VisaInterviewSession {
+  id            String   @id @default(cuid())
+  studentId     String?
+  student       Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  country       String
+  universityName String?
+  programName   String?
+  questions     String   // JSON array of { question, answer, score, feedback }
+  overallScore  Float?   @default(0)
+  status        String   @default("IN_PROGRESS") // IN_PROGRESS | COMPLETED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 // ============ Universities ============

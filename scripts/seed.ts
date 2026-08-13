@@ -299,7 +299,124 @@ async function main() {
   }
   console.log(`✅ Communications: ${allStudents.length}`);
 
-  // 7. Demo parent account (linked to Aarav Sharma)
+  // 8. Scholarships (40 real ones)
+  const SCHOLARSHIPS = [
+    // India
+    { name: "National Overseas Scholarship", provider: "Govt of India", country: "Any", amount: 1500000, amountLabel: "₹15L/year", level: "PG", cats: "MERIT,NEED", minScore: 7.5, fields: "ANY", color: "#e85d2f", desc: "For SC/ST students pursuing PG abroad. Covers tuition + maintenance." },
+    { name: "PG Scholarship for SC/ST", provider: "Ministry of Education", country: "India", amount: 800000, amountLabel: "₹8L/year", level: "PG", cats: "MERIT,MINORITY", minScore: 7.0, fields: "ANY", color: "#0f766e", desc: "Post-matric scholarship for SC/ST candidates." },
+    { name: "AICTE Pragati Scholarship", provider: "AICTE", country: "India", amount: 50000, amountLabel: "₹50,000/year", level: "UG", cats: "MERIT,MINORITY", minScore: 7.0, fields: "Engineering,Technology", color: "#f59e0b", desc: "For girls pursuing technical education." },
+    { name: "AICTE Saksham Scholarship", provider: "AICTE", country: "India", amount: 50000, amountLabel: "₹50,000/year", level: "UG", cats: "MERIT,NEED", minScore: 7.0, fields: "Engineering,Technology", color: "#e85d2f", desc: "For differently-abled students in technical courses." },
+    { name: "INSPIRE Scholarship", provider: "DST India", country: "India", amount: 80000, amountLabel: "₹80,000/year", level: "UG", cats: "MERIT,RESEARCH", minScore: 9.0, fields: "Science,Mathematics", color: "#0f766e", desc: "For students in natural sciences with >1% in board exams." },
+    { name: "Kishore Vaigyanik Protsahan Yojana", provider: "IISc Bangalore", country: "India", amount: 80000, amountLabel: "₹80,000/year", level: "UG", cats: "MERIT,RESEARCH", minScore: 8.5, fields: "Science,Engineering,Medicine", color: "#f59e0b", desc: "KVPY fellowship for science students." },
+    { name: "JN Tata Endowment Loan Scholarship", provider: "Tata Trusts", country: "Any", amount: 1000000, amountLabel: "₹10L loan", level: "PG", cats: "MERIT", minScore: 7.5, fields: "ANY", color: "#e85d2f", desc: "Loan scholarship for PG studies abroad." },
+    { name: "Inlaks Shivdasani Scholarship", provider: "Inlaks Foundation", country: "Any", amount: 1000000, amountLabel: "$100,000", level: "PG", cats: "MERIT", minScore: 8.5, fields: "ANY", color: "#0f766e", desc: "Prestigious scholarship for top universities abroad." },
+
+    // UK
+    { name: "Chevening Scholarship", provider: "UK Government", country: "United Kingdom", amount: 1800000, amountLabel: "Full tuition + £18k stipend", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 8.0, minIelts: 7.0, fields: "ANY", color: "#0f766e", desc: "UK Govt's global scholarship for future leaders. Covers full tuition + living + travel." },
+    { name: "Commonwealth Scholarship", provider: "UK Govt", country: "United Kingdom", amount: 1500000, amountLabel: "Full tuition + stipend", level: "PG", cats: "MERIT,NEED", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#e85d2f", desc: "For Commonwealth country citizens pursuing Master's/PhD in UK." },
+    { name: "Gates Cambridge Scholarship", provider: "University of Cambridge", country: "United Kingdom", amount: 2000000, amountLabel: "Full cost", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 8.5, minIelts: 7.5, fields: "ANY", color: "#f59e0b", desc: "Bill & Melinda Gates Foundation-funded at Cambridge." },
+    { name: "Rhodes Scholarship", provider: "University of Oxford", country: "United Kingdom", amount: 2500000, amountLabel: "Full cost + £18k stipend", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 8.5, minIelts: 7.5, fields: "ANY", color: "#0f766e", desc: "World's oldest and most prestigious scholarship at Oxford." },
+    { name: "Clarendon Fund", provider: "University of Oxford", country: "United Kingdom", amount: 2000000, amountLabel: "Full tuition + stipend", level: "PG", cats: "MERIT", minScore: 8.5, minIelts: 7.5, fields: "ANY", color: "#e85d2f", desc: "Oxford's flagship scholarship for graduate students." },
+    { name: " GREAT Scholarships India", provider: "British Council", country: "United Kingdom", amount: 1000000, amountLabel: "£10,000", level: "PG", cats: "MERIT", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#f59e0b", desc: "British Council + UK universities joint scholarship for Indian students." },
+    { name: "Charles Wallace India Trust", provider: "Charles Wallace Trust", country: "United Kingdom", amount: 800000, amountLabel: "£8,000", level: "PG", cats: "MERIT,NEED", minScore: 7.0, minIelts: 6.5, fields: "Arts,Humanities,Heritage", color: "#0f766e", desc: "For Indian creative professionals and academics." },
+
+    // US
+    { name: "Fulbright-Nehru Master's Fellowship", provider: "USIEF", country: "United States", amount: 2000000, amountLabel: "Full cost", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 8.0, minToefl: 100, fields: "ANY", color: "#e85d2f", desc: "For outstanding Indians to pursue Master's in US." },
+    { name: "Stanford Knight-Hennessy Scholars", provider: "Stanford University", country: "United States", amount: 3000000, amountLabel: "Full cost", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 8.5, minToefl: 100, fields: "ANY", color: "#0f766e", desc: "Stanford's flagship scholarship for graduate studies." },
+    { name: "Harvard MBA Scholarship", provider: "Harvard Business School", country: "United States", amount: 3500000, amountLabel: "Full cost", level: "PG", cats: "MERIT,NEED", minScore: 8.0, minToefl: 109, fields: "Business,MBA", color: "#f59e0b", desc: "Need-based scholarship for Harvard MBA." },
+    { name: "AAUW International Fellowship", provider: "AAUW", country: "United States", amount: 1500000, amountLabel: "$20,000-50,000", level: "PG", cats: "MERIT", minScore: 7.5, minToefl: 100, fields: "ANY", color: "#e85d2f", desc: "For women pursuing graduate studies in US." },
+    { name: "Aga Khan Foundation Scholarship", provider: "Aga Khan Foundation", country: "Any", amount: 1500000, amountLabel: "50% grant + 50% loan", level: "PG", cats: "MERIT,NEED", minScore: 7.5, fields: "ANY", color: "#0f766e", desc: "For outstanding students from developing countries." },
+
+    // Canada
+    { name: "Vanier Canada Graduate Scholarship", provider: "Govt of Canada", country: "Canada", amount: 2500000, amountLabel: "$50,000/year × 3", level: "PHD", cats: "MERIT,RESEARCH,LEADERSHIP", minScore: 8.5, minIelts: 7.0, fields: "ANY", color: "#e85d2f", desc: "Canada's top doctoral scholarship." },
+    { name: "Trudeau Foundation Scholarship", provider: "Pierre Elliott Trudeau Foundation", country: "Canada", amount: 2000000, amountLabel: "$40,000/year", level: "PHD", cats: "MERIT,RESEARCH", minScore: 8.5, minIelts: 7.0, fields: "Social Sciences,Humanities", color: "#0f766e", desc: "For doctoral researchers in social sciences/humanities." },
+    { name: "Lester B. Pearson Scholarship", provider: "University of Toronto", country: "Canada", amount: 2500000, amountLabel: "Full cost", level: "UG", cats: "MERIT,LEADERSHIP", minScore: 9.0, minIelts: 7.0, fields: "ANY", color: "#f59e0b", desc: "U of T's flagship international student scholarship." },
+    { name: "UBC International Leader of Tomorrow", provider: "University of British Columbia", country: "Canada", amount: 2000000, amountLabel: "Full tuition + living", level: "UG", cats: "MERIT,LEADERSHIP,NEED", minScore: 8.5, minIelts: 7.0, fields: "ANY", color: "#e85d2f", desc: "For outstanding international undergrads at UBC." },
+    { name: "Canada-India Research S&T", provider: "IC-IMPACTS", country: "Canada", amount: 1200000, amountLabel: "$20,000", level: "PG", cats: "MERIT,RESEARCH", minScore: 8.0, minIelts: 6.5, fields: "Engineering,Science,Technology", color: "#0f766e", desc: "For India-Canada research collaboration." },
+
+    // Australia
+    { name: "Australia Awards Scholarship", provider: "Australian Govt", country: "Australia", amount: 2000000, amountLabel: "Full cost", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#e85d2f", desc: "Australian Government's long-standing awards program." },
+    { name: "Endeavour Postgraduate Scholarship", provider: "Australian Govt", country: "Australia", amount: 1500000, amountLabel: "AUD 140,500", level: "PG", cats: "MERIT", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#0f766e", desc: "For international students to undertake PG in Australia." },
+    { name: "Research Training Program", provider: "Australian Universities", country: "Australia", amount: 1800000, amountLabel: "Full tuition + stipend", level: "PG", cats: "MERIT,RESEARCH", minScore: 8.0, minIelts: 6.5, fields: "Research", color: "#f59e0b", desc: "RTP for domestic + international HDR students." },
+    { name: "Melbourne Graduate Research Scholarship", provider: "University of Melbourne", country: "Australia", amount: 2200000, amountLabel: "Full cost + stipend", level: "PG", cats: "MERIT,RESEARCH", minScore: 8.5, minIelts: 7.0, fields: "ANY", color: "#e85d2f", desc: "Melbourne's flagship scholarship for grad researchers." },
+
+    // Ireland
+    { name: "Government of Ireland Postgrad Scholarship", provider: "Irish Research Council", country: "Ireland", amount: 1200000, amountLabel: "€16,000 stipend + fees", level: "PG", cats: "MERIT,RESEARCH", minScore: 8.0, minIelts: 6.5, fields: "ANY", color: "#0f766e", desc: "For pursuing research Master's or PhD in Ireland." },
+    { name: "Trinity College Global Excellence", provider: "Trinity College Dublin", country: "Ireland", amount: 800000, amountLabel: "€5,000-12,000", level: "PG", cats: "MERIT", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#e85d2f", desc: "TCD's merit scholarship for international students." },
+    { name: "UCD Global Excellence Scholarship", provider: "University College Dublin", country: "Ireland", amount: 1000000, amountLabel: "€10,000-20,000", level: "UG", cats: "MERIT", minScore: 8.0, minIelts: 6.5, fields: "ANY", color: "#f59e0b", desc: "UCD's scholarship for high-achieving international students." },
+
+    // Germany
+    { name: "DAAD Scholarship", provider: "DAAD", country: "Germany", amount: 1000000, amountLabel: "€934-1,200/month", level: "PG", cats: "MERIT,RESEARCH", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#e85d2f", desc: "Germany's flagship international scholarship program." },
+    { name: "Deutschlandstipendium", provider: "German Universities", country: "Germany", amount: 350000, amountLabel: "€300/month", level: "UG", cats: "MERIT", minScore: 7.5, fields: "ANY", color: "#0f766e", desc: "Public-private partnership scholarship for talented students." },
+    { name: "Heinrich Böll Foundation Scholarship", provider: "Heinrich Böll Foundation", country: "Germany", amount: 900000, amountLabel: "€861/month + tuition", level: "PG", cats: "MERIT,LEADERSHIP", minScore: 8.0, minIelts: 6.5, fields: "ANY", color: "#f59e0b", desc: "For undergrads, grads, and PhDs in Germany." },
+
+    // Singapore
+    { name: "Singapore International Graduate Award", provider: "A*STAR", country: "Singapore", amount: 2000000, amountLabel: "S$2,000-2,700/month", level: "PHD", cats: "MERIT,RESEARCH", minScore: 8.5, minIelts: 7.0, fields: "Science,Engineering", color: "#e85d2f", desc: "For PhD studies at NUS, NTU, SUTD, SMU." },
+    { name: "ASEAN Undergraduate Scholarship", provider: "NUS", country: "Singapore", amount: 1800000, amountLabel: "Full tuition + living", level: "UG", cats: "MERIT", minScore: 8.5, minIelts: 7.0, fields: "ANY", color: "#0f766e", desc: "NUS scholarship for ASEAN students (incl. India)." },
+
+    // New Zealand
+    { name: "NZ Excellence Awards", provider: "Education NZ", country: "New Zealand", amount: 1000000, amountLabel: "NZD 10,000-20,000", level: "PG", cats: "MERIT", minScore: 7.5, minIelts: 6.5, fields: "ANY", color: "#f59e0b", desc: "For Indian students pursuing PG in NZ." },
+    { name: "University of Auckland Doctoral Scholarship", provider: "University of Auckland", country: "New Zealand", amount: 2000000, amountLabel: "NZD 29,860 + fees", level: "PHD", cats: "MERIT,RESEARCH", minScore: 8.5, minIelts: 7.0, fields: "ANY", color: "#e85d2f", desc: "For doctoral candidates at University of Auckland." },
+  ];
+
+  for (const s of SCHOLARSHIPS) {
+    await prisma.scholarship.create({
+      data: {
+        name: s.name,
+        provider: s.provider,
+        country: s.country,
+        amount: s.amount,
+        amountLabel: s.amountLabel,
+        level: s.level,
+        categories: s.cats,
+        minScore: s.minScore,
+        minIelts: s.minIelts || null,
+        minToefl: s.minToefl || null,
+        deadline: "2026-03-15",
+        intake: "Fall 2026",
+        fields: s.fields,
+        website: "https://example.org",
+        logoColor: s.color,
+        description: s.desc,
+      },
+    });
+  }
+  console.log(`✅ Scholarships: ${SCHOLARSHIPS.length}`);
+
+  // 9. Deadlines (sample for next 30 days)
+  const deadlineStudents = await prisma.student.findMany({ take: 8 });
+  const now = Date.now();
+  const day = 86400000;
+  const sampleDeadlines = [
+    { title: "Submit financial documents for UK visa", cat: "DOCUMENT", pri: "HIGH", days: 2, country: "United Kingdom" },
+    { title: "Manchester application deadline", cat: "APPLICATION", pri: "CRITICAL", days: 1, country: "United Kingdom" },
+    { title: "Biometric appointment — Toronto visa", cat: "VISA", pri: "HIGH", days: 4, country: "Canada" },
+    { title: "Pay first installment — Purdue", cat: "PAYMENT", pri: "HIGH", days: 6, country: "United States" },
+    { title: "Chevening scholarship deadline", cat: "SCHOLARSHIP", pri: "CRITICAL", days: 3, country: "United Kingdom" },
+    { title: "Visa interview — Monash University", cat: "INTERVIEW", pri: "CRITICAL", days: 5, country: "Australia" },
+    { title: "Submit SOP — TUM Munich", cat: "DOCUMENT", pri: "MEDIUM", days: 9, country: "Germany" },
+    { title: "Cambridge application deadline", cat: "APPLICATION", pri: "CRITICAL", days: 7, country: "United Kingdom" },
+    { title: "Submit LOR — Trinity College Dublin", cat: "DOCUMENT", pri: "MEDIUM", days: 11, country: "Ireland" },
+    { title: "Pay SEVIS fee — US F1 visa", cat: "PAYMENT", pri: "HIGH", days: 8, country: "United States" },
+  ];
+  for (let i = 0; i < sampleDeadlines.length; i++) {
+    const d = sampleDeadlines[i];
+    await prisma.deadline.create({
+      data: {
+        studentId: deadlineStudents[i % deadlineStudents.length].id,
+        title: d.title,
+        description: `Auto-generated deadline. Action needed for ${d.country} application.`,
+        dueDate: new Date(now + d.days * day),
+        priority: d.pri,
+        category: d.cat,
+        country: d.country,
+        status: "PENDING",
+      },
+    });
+  }
+  console.log(`✅ Deadlines: ${sampleDeadlines.length}`);
+
+  // 10. Demo parent account (linked to Aarav Sharma)
   const aarav = await prisma.student.findFirst({ where: { firstName: "Aarav", lastName: "Sharma" } });
   if (aarav) {
     const parent = await prisma.parent.upsert({

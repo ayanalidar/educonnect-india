@@ -47,6 +47,10 @@ export default function Topbar({
     finance: "finance.subtitle",
     analytics: "analytics.subtitle",
     integrations: "integrations.subtitle",
+    scholarships: "scholarships.subtitle",
+    deadlines: "deadlines.subtitle",
+    "visa-interview": "visa-interview.subtitle",
+    mobile: "mobile.subtitle",
     innovation: "innovation.subtitle",
     settings: "settings.subtitle",
   };

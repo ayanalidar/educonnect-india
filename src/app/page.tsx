@@ -14,6 +14,7 @@ import Pricing from "@/components/site/pricing";
 import Contact from "@/components/site/contact";
 import Footer from "@/components/site/footer";
 import AuthModal from "@/components/site/auth-modal";
+import ChatbotWidget from "@/components/site/chatbot-widget";
 import DashboardShell from "@/components/dashboard/dashboard-shell";
 import ParentPortal from "@/components/site/parent-portal";
 
@@ -24,6 +25,7 @@ export default function Home() {
     <I18nProvider>
       <AppShell />
       <AuthModal />
+      <ChatbotWidget />
     </I18nProvider>
   );
 }
@@ -59,4 +61,3 @@ function AppShell() {
     </div>
   );
 }
-

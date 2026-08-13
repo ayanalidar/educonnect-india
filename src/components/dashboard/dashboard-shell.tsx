@@ -17,6 +17,10 @@ import DocumentsView from "@/components/dashboard/views/documents";
 import FinanceView from "@/components/dashboard/views/finance";
 import AnalyticsView from "@/components/dashboard/views/analytics";
 import IntegrationsView from "@/components/dashboard/views/integrations";
+import ScholarshipsView from "@/components/dashboard/views/scholarships";
+import DeadlinesView from "@/components/dashboard/views/deadlines";
+import VisaInterviewerView from "@/components/dashboard/views/visa-interviewer";
+import MobileAppView from "@/components/dashboard/views/mobile-app";
 import InnovationLabView from "@/components/dashboard/views/innovation-lab";
 import SettingsView from "@/components/dashboard/views/settings";
 import { useAppStore } from "@/store/app-store";
@@ -53,6 +57,10 @@ export default function DashboardShell() {
           {view === "finance" && <FinanceView />}
           {view === "analytics" && <AnalyticsView />}
           {view === "integrations" && <IntegrationsView />}
+          {view === "scholarships" && <ScholarshipsView />}
+          {view === "deadlines" && <DeadlinesView />}
+          {view === "visa-interview" && <VisaInterviewerView />}
+          {view === "mobile" && <MobileAppView />}
           {view === "innovation" && <InnovationLabView />}
           {view === "settings" && <SettingsView />}
         </main>
